@@ -21,7 +21,34 @@
     return `${chars[index - 1] || ""}|${chars[index] || ""}|${chars[index + 1] || ""}`;
   }
 
+  function buildPracticeItems(chars, repeat, targetCount) {
+    const items = [];
+    const desiredCount = Number.isInteger(targetCount) ? targetCount : chars.length * repeat;
+
+    if (chars.length === 0 || desiredCount <= 0) {
+      return items;
+    }
+
+    while (items.length < desiredCount) {
+      chars.forEach((char, sourceIndex) => {
+        if (items.length < desiredCount) {
+          items.push({ char, sourceIndex });
+        }
+      });
+    }
+
+    return items;
+  }
+
+  function calculateTargetRows(filledCellCount, columns, preferredRows) {
+    const neededRows = Math.ceil(filledCellCount / columns);
+
+    return Math.max(preferredRows, neededRows || preferredRows);
+  }
+
   const api = {
+    buildPracticeItems,
+    calculateTargetRows,
     contextKeyFor,
     parsePhoneticData,
   };

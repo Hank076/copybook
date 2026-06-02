@@ -6,15 +6,22 @@ const state = {
   lastSelection: "",
 };
 
-const { contextKeyFor, parsePhoneticData } = window.CopybookCore;
+const { buildPracticeItems, calculateTargetRows, contextKeyFor, parsePhoneticData } = window.CopybookCore;
+const COPY_GRID_HEIGHT_MM = 231;
 
 const els = {
   textInput: document.querySelector("#textInput"),
   fontSize: document.querySelector("#fontSize"),
   fontSizeValue: document.querySelector("#fontSizeValue"),
   repeatCount: document.querySelector("#repeatCount"),
+  columnCount: document.querySelector("#columnCount"),
+  columnCountValue: document.querySelector("#columnCountValue"),
+  rowCount: document.querySelector("#rowCount"),
+  rowCountValue: document.querySelector("#rowCountValue"),
+  characterCount: document.querySelector("#characterCount"),
+  cellCount: document.querySelector("#cellCount"),
   bpmfToggle: document.querySelector("#bpmfToggle"),
-  renderButton: document.querySelector("#renderButton"),
+  fillPageToggle: document.querySelector("#fillPageToggle"),
   printButton: document.querySelector("#printButton"),
   status: document.querySelector("#status"),
   grid: document.querySelector("#grid"),
@@ -60,6 +67,14 @@ function selectedReadingFor(char, contextKey) {
   return readings[selectedIndex] || "";
 }
 
+function updateReadingCells(contextKey, reading) {
+  document.querySelectorAll(".cell").forEach((cell) => {
+    if (cell.dataset.contextKey === contextKey) {
+      cell.querySelector(".bpmf").textContent = reading;
+    }
+  });
+}
+
 function createCell(char, contextKey, reading, fontSize, isPolyphonic) {
   const cell = document.createElement("div");
   cell.className = "cell";
@@ -73,6 +88,7 @@ function createCell(char, contextKey, reading, fontSize, isPolyphonic) {
 
   const square = document.createElement("div");
   square.className = "square";
+  addGuideLines(square);
 
   const charNode = document.createElement("span");
   charNode.className = "char";
@@ -86,6 +102,29 @@ function createCell(char, contextKey, reading, fontSize, isPolyphonic) {
 
   cell.append(square, bpmf);
   return cell;
+}
+
+function createPracticeCell() {
+  const cell = document.createElement("div");
+  cell.className = "cell practice-cell";
+
+  const square = document.createElement("div");
+  square.className = "square";
+  addGuideLines(square);
+
+  const bpmf = document.createElement("span");
+  bpmf.className = "bpmf";
+
+  cell.append(square, bpmf);
+  return cell;
+}
+
+function addGuideLines(square) {
+  for (const className of ["guide center-v", "guide center-h", "guide diagonal-a", "guide diagonal-b"]) {
+    const guide = document.createElement("span");
+    guide.className = className;
+    square.append(guide);
+  }
 }
 
 function updateStatus(missingChars) {
@@ -107,22 +146,42 @@ function updateStatus(missingChars) {
   els.status.textContent = state.lastSelection || `已載入 ${state.readings.size} 筆注音。點選多音字可依前後各 1 字上下文切換讀音。`;
 }
 
+function clampNumber(input, min, max, fallback) {
+  const value = Number.parseInt(input.value, 10);
+  return Math.max(min, Math.min(max, Number.isNaN(value) ? fallback : value));
+}
+
 function render() {
   const chars = charactersFromText(els.textInput.value);
-  const repeat = Math.max(1, Math.min(12, Number.parseInt(els.repeatCount.value, 10) || 1));
+  const repeat = clampNumber(els.repeatCount, 1, 12, 1);
+  const columns = clampNumber(els.columnCount, 4, 8, 6);
+  const preferredRows = clampNumber(els.rowCount, 8, 18, 11);
   const fontSize = Number.parseInt(els.fontSize.value, 10);
   const gridStyle = selectedValue("grid");
   const inkMode = selectedValue("ink");
   const showBpmf = els.bpmfToggle.checked;
+  const fillPage = els.fillPageToggle.checked;
   const missing = new Set();
 
   els.fontSizeValue.textContent = String(fontSize);
   els.repeatCount.value = String(repeat);
+  els.columnCount.value = String(columns);
+  els.columnCountValue.textContent = String(columns);
+  els.rowCount.value = String(preferredRows);
+  els.characterCount.textContent = String(chars.length);
   els.grid.className = `grid ${gridStyle} ${inkMode}${showBpmf ? "" : " no-bpmf"}`;
+  els.grid.style.setProperty("--columns", String(columns));
+  els.grid.style.removeProperty("--rows");
   els.grid.textContent = "";
 
-  chars.forEach((char, charIndex) => {
-    const contextKey = contextKeyFor(chars, charIndex);
+  const basePracticeItems = buildPracticeItems(chars, repeat);
+  const targetRows = calculateTargetRows(basePracticeItems.length, columns, preferredRows);
+  const targetCellCount = columns * targetRows;
+  const practiceItems = buildPracticeItems(chars, repeat, fillPage ? targetCellCount : undefined);
+  const cellHeight = COPY_GRID_HEIGHT_MM / targetRows;
+
+  practiceItems.forEach(({ char, sourceIndex }) => {
+    const contextKey = contextKeyFor(chars, sourceIndex);
     const readings = state.readings.get(char) || [];
     const reading = selectedReadingFor(char, contextKey);
 
@@ -130,10 +189,17 @@ function render() {
       missing.add(char);
     }
 
-    for (let index = 0; index < repeat; index += 1) {
-      els.grid.append(createCell(char, contextKey, reading, fontSize, readings.length > 1));
-    }
+    els.grid.append(createCell(char, contextKey, reading, fontSize, readings.length > 1));
   });
+
+  for (let index = practiceItems.length; index < targetCellCount; index += 1) {
+    els.grid.append(createPracticeCell());
+  }
+
+  els.cellCount.textContent = String(targetCellCount);
+  els.rowCountValue.textContent = String(targetRows);
+  els.grid.style.setProperty("--rows", String(targetRows));
+  els.grid.style.setProperty("--cell-height", `${cellHeight.toFixed(3)}mm`);
 
   updateStatus(Array.from(missing));
 }
@@ -143,7 +209,10 @@ function bindEvents() {
     els.textInput,
     els.fontSize,
     els.repeatCount,
+    els.columnCount,
+    els.rowCount,
     els.bpmfToggle,
+    els.fillPageToggle,
     ...document.querySelectorAll('input[name="grid"], input[name="ink"]'),
   ];
 
@@ -152,7 +221,6 @@ function bindEvents() {
     control.addEventListener("change", render);
   }
 
-  els.renderButton.addEventListener("click", render);
   els.printButton.addEventListener("click", () => window.print());
   els.grid.addEventListener("click", handleGridClick);
 }
@@ -173,7 +241,8 @@ function handleGridClick(event) {
 
   state.selectedReadings.set(contextKey, nextIndex);
   state.lastSelection = `「${char}」已切換為 ${readings[nextIndex]}。相同前後各 1 字上下文的格子會同步更新。`;
-  render();
+  updateReadingCells(contextKey, readings[nextIndex]);
+  updateStatus([]);
 }
 
 bindEvents();

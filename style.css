@@ -56,7 +56,7 @@ button {
 
 .app-shell {
   display: grid;
-  grid-template-columns: minmax(360px, 420px) minmax(0, 1fr);
+  grid-template-columns: 320px minmax(0, 1fr);
   min-height: 100vh;
 }
 
@@ -65,7 +65,7 @@ button {
   top: 0;
   height: 100vh;
   overflow: auto;
-  padding: 24px;
+  padding: 16px;
   background: color-mix(in oklch, var(--surface) 88%, var(--bg));
   border-right: 1px solid var(--border);
 }
@@ -74,7 +74,7 @@ button {
   display: grid;
   gap: 10px;
   margin-bottom: 18px;
-  padding: 22px;
+  padding: 16px;
   border: 1px solid var(--border);
   border-radius: 18px;
   background: var(--surface);
@@ -98,7 +98,7 @@ h2 {
 }
 
 h1 {
-  font-size: 28px;
+  font-size: 24px;
   line-height: 1.15;
 }
 
@@ -117,7 +117,7 @@ p {
   display: grid;
   gap: 18px;
   margin-top: 14px;
-  padding: 20px;
+  padding: 14px;
   border: 1px solid var(--border);
   border-radius: 16px;
   background: var(--surface);
@@ -261,14 +261,18 @@ input[type="range"] {
 
 .control-grid {
   display: grid;
-  grid-template-columns: 1fr 112px 112px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   align-items: end;
 }
 
+.control-grid .field:first-child {
+  grid-column: 1 / -1;
+}
+
 .actions {
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
+  grid-template-columns: 1fr;
   gap: 10px;
 }
 
@@ -313,7 +317,6 @@ input[type="range"] {
 }
 
 .preview-stage {
-  --sheet-scale: 1;
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -368,15 +371,14 @@ input[type="range"] {
   flex: 1;
   min-height: 0;
   overflow: auto;
-  display: grid;
-  justify-content: center;
-  align-content: start;
+  display: block;
   padding-bottom: 18px;
 }
 
 .sheet-fit {
   width: 210mm;
   min-height: 297mm;
+  margin: 0 auto;
 }
 
 .sheet {
@@ -384,13 +386,9 @@ input[type="range"] {
   min-height: 297mm;
   margin: 0 auto;
   padding: 12mm 13mm;
-  background:
-    linear-gradient(to bottom, color-mix(in oklch, var(--accent) 4%, transparent), transparent 38mm),
-    var(--paper);
+  background: #fff;
   border: 1px solid color-mix(in oklch, var(--border) 72%, var(--fg));
   box-shadow: 0 22px 48px color-mix(in oklch, var(--fg) 18%, transparent);
-  transform: scale(var(--sheet-scale));
-  transform-origin: top center;
 }
 
 .sheet-header {
@@ -442,24 +440,31 @@ input[type="range"] {
 
 .grid {
   --columns: 6;
+  --rows: 11;
+  --cell-height: 21mm;
   display: grid;
-  grid-template-columns: repeat(var(--columns), 1fr);
-  gap: 0 8px;
+  direction: rtl;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(var(--rows), var(--cell-height));
+  grid-auto-columns: minmax(0, 1fr);
+  grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
+  gap: 0;
   align-items: start;
+  border-top: 1.2px solid var(--fg);
+  border-right: 1.2px solid var(--fg);
 }
 
 .cell {
   display: grid;
   grid-template-columns: 1fr 28px;
   min-width: 0;
-  height: 21mm;
-  border: 1.2px solid var(--fg);
-  border-bottom-width: 0;
+  height: var(--cell-height);
+  direction: ltr;
+  border-right: 0;
+  border-bottom: 1.2px solid var(--fg);
+  border-left: 1.2px solid var(--fg);
+  border-top: 0;
   break-inside: avoid;
-}
-
-.cell.last-row {
-  border-bottom-width: 1.2px;
 }
 
 .cell.polyphonic {
@@ -467,7 +472,7 @@ input[type="range"] {
 }
 
 .practice-cell {
-  background: color-mix(in oklch, var(--paper) 92%, var(--surface));
+  background: transparent;
 }
 
 .square {
@@ -479,26 +484,50 @@ input[type="range"] {
   overflow: hidden;
 }
 
-.square::before,
-.square::after {
-  content: "";
+.guide {
   position: absolute;
   pointer-events: none;
+  z-index: 0;
+  display: none;
+  border-color: var(--guide);
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
 }
 
-.grid.tian .square::before,
-.grid.mi .square::before {
-  inset: 0;
-  background:
-    linear-gradient(to right, transparent calc(50% - 0.5px), var(--guide) calc(50% - 0.5px), var(--guide) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
-    linear-gradient(to bottom, transparent calc(50% - 0.5px), var(--guide) calc(50% - 0.5px), var(--guide) calc(50% + 0.5px), transparent calc(50% + 0.5px));
+.center-v {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  border-left: 1px dashed var(--guide);
 }
 
-.grid.mi .square::after {
-  inset: -1px;
-  background:
-    linear-gradient(45deg, transparent calc(50% - 0.5px), var(--guide) calc(50% - 0.5px), var(--guide) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
-    linear-gradient(-45deg, transparent calc(50% - 0.5px), var(--guide) calc(50% - 0.5px), var(--guide) calc(50% + 0.5px), transparent calc(50% + 0.5px));
+.center-h {
+  top: 50%;
+  left: 0;
+  right: 0;
+  border-top: 1px dashed var(--guide);
+}
+
+.diagonal-a,
+.diagonal-b {
+  top: 50%;
+  left: -21%;
+  width: 142%;
+  border-top: 1px dashed var(--guide);
+}
+
+.diagonal-a {
+  transform: rotate(45deg);
+}
+
+.diagonal-b {
+  transform: rotate(-45deg);
+}
+
+.grid.tian .center-v,
+.grid.tian .center-h,
+.grid.mi .guide {
+  display: block;
 }
 
 .char {
@@ -566,7 +595,7 @@ input[type="range"] {
   .preview-stage {
     height: auto;
     padding: 20px;
-    overflow: visible;
+    overflow: auto;
   }
 
   .sheet-frame {
@@ -595,7 +624,7 @@ input[type="range"] {
   }
 
   .sheet-frame {
-    justify-content: start;
+    min-height: min(78vh, 760px);
   }
 }
 

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>中文注音練字帖產生器</title>
+    <title>國字標準字體練字帖產生器</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23fffefa'/%3E%3Cpath d='M7 8h18v18H7zM16 8v18M7 17h18' fill='none' stroke='%232b3a42' stroke-width='1.6'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-size='14' font-family='serif' fill='%23d75043'%3E字%3C/text%3E%3C/svg%3E">
     <link rel="stylesheet" href="style.css">
   </head>
@@ -11,9 +11,9 @@
     <main class="app-shell">
       <aside class="workspace-panel" aria-label="練字帖設定">
         <header class="brand-panel">
-          <p class="eyebrow">A4 注音練字帖</p>
-          <h1>中文注音練字帖產生器</h1>
-          <p>輸入要練習的中文字，調整格線、注音與描紅樣式後，即時產生可列印的正式教材版面。</p>
+          <p class="eyebrow">A4 國字練字帖</p>
+          <h1>練字帖產生器</h1>
+          <p>輸入要練習的國字，調整格線、注音與描紅樣式後，即時產生可列印的練字帖。</p>
         </header>
 
         <section class="panel-card" aria-labelledby="step-input" data-od-id="input-panel">
@@ -21,15 +21,13 @@
             <span class="step-mark">1</span>
             <div>
               <h2 id="step-input">輸入練習內容</h2>
-              <p>換行與標點會自動略過，只保留中文字練習格。</p>
+              <p>換行與標點會自動略過，只保留國字練習格。</p>
             </div>
           </div>
 
           <label class="field">
             <span>要練習的字詞</span>
-            <textarea id="textInput" rows="6">陳韋程
-上下左右
-日月山水</textarea>
+            <textarea id="textInput" rows="6">陳瑋程</textarea>
           </label>
         </section>
 
@@ -66,19 +64,29 @@
             <span>顯示注音</span>
           </label>
 
+          <label class="switch">
+            <input id="fillPageToggle" type="checkbox">
+            <span>填滿頁面</span>
+          </label>
+
           <div class="control-grid">
             <label class="field">
               <span>字體大小 <output id="fontSizeValue">46</output>px</span>
-              <input id="fontSize" type="range" min="34" max="62" value="46">
+              <input id="fontSize" type="range" min="20" max="96" value="46">
             </label>
 
             <label class="field">
-              <span>每列字數</span>
+              <span>每頁欄數</span>
               <input id="columnCount" type="number" min="4" max="8" value="6">
             </label>
 
             <label class="field">
-              <span>每字重複格數</span>
+              <span>每頁列數</span>
+              <input id="rowCount" type="number" min="8" max="18" value="11">
+            </label>
+
+            <label class="field">
+              <span>整句重複次數</span>
               <input id="repeatCount" type="number" min="1" max="12" value="5">
             </label>
           </div>
@@ -94,7 +102,6 @@
           </div>
 
           <div class="actions">
-            <button id="renderButton" class="secondary-button" type="button">更新預覽</button>
             <button id="printButton" class="primary-button" type="button">列印 / 存 PDF</button>
           </div>
 
@@ -119,7 +126,11 @@
             </div>
             <div>
               <dt>每列</dt>
-              <dd><span id="columnCountValue">6</span> 字</dd>
+              <dd><span id="columnCountValue">6</span> 欄</dd>
+            </div>
+            <div>
+              <dt>每欄</dt>
+              <dd><span id="rowCountValue">11</span> 列</dd>
             </div>
           </dl>
         </div>
@@ -129,8 +140,8 @@
             <article id="sheet" class="sheet">
               <header class="sheet-header">
                 <div>
-                  <p>中華民國（臺灣）教育部標準楷體</p>
-                  <h2>中文硬筆字注音練習</h2>
+                  <p>教育部標準楷書</p>
+                  <h2>教育部國字標準字體練習</h2>
                 </div>
                 <dl>
                   <div><dt>姓名</dt><dd></dd></div>
