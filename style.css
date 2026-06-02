@@ -486,6 +486,7 @@ input[type="range"] {
   display: grid;
   grid-template-columns: 9px 1fr 9px;
   align-items: center;
+  position: relative;
   width: 100%;
   font-family: var(--font-display);
   font-size: 15px;
@@ -506,11 +507,12 @@ input[type="range"] {
 }
 
 .bpmf-tone {
-  grid-column: 3;
-  justify-self: center;
+  position: absolute;
+  right: 0;
+  bottom: 9px;
   writing-mode: vertical-rl;
   text-orientation: upright;
-  font-size: 0.6em;
+  font-size: 0.55em;
 }
 
 .bpmf-syl rp {
