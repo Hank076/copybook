@@ -210,6 +210,7 @@ function render() {
   const missing = new Set();
 
   els.repeatCount.value = String(repeat);
+  els.repeatCount.disabled = fillPage;
   els.columnCount.value = String(columns);
   els.rowCount.value = String(preferredRows);
 

@@ -59,15 +59,17 @@
             </div>
           </fieldset>
 
-          <label class="switch">
-            <input id="bpmfToggle" type="checkbox" checked>
-            <span>顯示注音</span>
-          </label>
+          <div class="switch-row">
+            <label class="switch">
+              <input id="bpmfToggle" type="checkbox" checked>
+              <span>顯示注音</span>
+            </label>
 
-          <label class="switch">
-            <input id="fillPageToggle" type="checkbox">
-            <span>填滿頁面</span>
-          </label>
+            <label class="switch">
+              <input id="fillPageToggle" type="checkbox">
+              <span>填滿頁面</span>
+            </label>
+          </div>
 
           <div class="control-grid">
             <label class="field">
@@ -81,7 +83,7 @@
             </label>
 
             <label class="field">
-              <span>整句重複次數</span>
+              <span>重複次數</span>
               <input id="repeatCount" type="number" min="0" max="12" value="0">
             </label>
           </div>
@@ -97,7 +99,7 @@
           </div>
 
           <div class="actions">
-            <button id="printButton" class="primary-button" type="button">列印 / 存 PDF</button>
+            <button id="printButton" class="primary-button" type="button">列印</button>
           </div>
 
           <p id="status" class="status" role="status">正在載入注音資料...</p>
