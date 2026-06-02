@@ -3,7 +3,7 @@ import { createRequire } from "node:module";
 import { test } from "node:test";
 
 const require = createRequire(import.meta.url);
-const { buildPracticeItems, calculateTargetRows, contextKeyFor, parsePhoneticData } = require("../copybook-core.js");
+const { buildPracticeItems, calculateTargetRows, contextKeyFor, parsePhoneticData, parseZhuyin } = require("../copybook-core.js");
 
 test("parsePhoneticData keeps all readings for a character", () => {
   const readings = parsePhoneticData("重\t91CD\tA\tㄓㄨㄥˋ\tㄔㄨㄥˊ\n");
@@ -49,4 +49,12 @@ test("buildPracticeItems fills to target count by repeating the phrase", () => {
 test("calculateTargetRows keeps the selected rows unless content needs more", () => {
   assert.equal(calculateTargetRows(12, 6, 10), 10);
   assert.equal(calculateTargetRows(61, 6, 10), 11);
+});
+
+test("parseZhuyin splits leading light tone, body, and trailing tone", () => {
+  assert.deepEqual(parseZhuyin("ㄔㄣˊ"), { lead: "", body: "ㄔㄣ", tone: "ˊ" });
+  assert.deepEqual(parseZhuyin("ㄑㄧㄡ"), { lead: "", body: "ㄑㄧㄡ", tone: "" });
+  assert.deepEqual(parseZhuyin("ㄨˇ"), { lead: "", body: "ㄨ", tone: "ˇ" });
+  assert.deepEqual(parseZhuyin("˙ㄌㄜ"), { lead: "˙", body: "ㄌㄜ", tone: "" });
+  assert.deepEqual(parseZhuyin(""), { lead: "", body: "", tone: "" });
 });

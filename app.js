@@ -6,7 +6,7 @@ const state = {
   lastSelection: "",
 };
 
-const { buildPracticeItems, calculateTargetRows, contextKeyFor, parsePhoneticData } = window.CopybookCore;
+const { buildPracticeItems, calculateTargetRows, contextKeyFor, parsePhoneticData, parseZhuyin } = window.CopybookCore;
 
 const PAGE = {
   widthMm: 210,
@@ -81,10 +81,45 @@ function selectedReadingFor(char, contextKey) {
   return readings[selectedIndex] || "";
 }
 
+function renderZhuyin(container, reading) {
+  container.textContent = "";
+
+  if (!reading) return;
+
+  const { lead, body, tone } = parseZhuyin(reading);
+  const column = document.createElement("span");
+  column.className = "bpmf-col";
+
+  if (lead) {
+    const light = document.createElement("span");
+    light.className = "bpmf-light";
+    light.textContent = lead;
+    column.append(light);
+  }
+
+  const ruby = document.createElement("ruby");
+  ruby.className = "bpmf-ruby";
+  ruby.append(document.createTextNode(body));
+
+  if (tone) {
+    const rpOpen = document.createElement("rp");
+    rpOpen.textContent = "（";
+    const rt = document.createElement("rt");
+    rt.className = "bpmf-tone";
+    rt.textContent = tone;
+    const rpClose = document.createElement("rp");
+    rpClose.textContent = "）";
+    ruby.append(rpOpen, rt, rpClose);
+  }
+
+  column.append(ruby);
+  container.append(column);
+}
+
 function updateReadingCells(contextKey, reading) {
   document.querySelectorAll(".cell").forEach((cell) => {
     if (cell.dataset.contextKey === contextKey) {
-      cell.querySelector(".bpmf").textContent = reading;
+      renderZhuyin(cell.querySelector(".bpmf"), reading);
     }
   });
 }
@@ -112,7 +147,7 @@ function createCell(char, contextKey, reading, fontSize, isPolyphonic) {
 
   const bpmf = document.createElement("span");
   bpmf.className = "bpmf";
-  bpmf.textContent = reading;
+  renderZhuyin(bpmf, reading);
 
   cell.append(square, bpmf);
   return cell;

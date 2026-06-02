@@ -21,6 +21,27 @@
     return `${chars[index - 1] || ""}|${chars[index] || ""}|${chars[index + 1] || ""}`;
   }
 
+  const LIGHT_TONE = "˙";
+  const TRAILING_TONES = new Set(["ˊ", "ˇ", "ˋ", "ˉ"]);
+
+  function parseZhuyin(reading) {
+    let body = reading || "";
+    let lead = "";
+    let tone = "";
+
+    if (body.startsWith(LIGHT_TONE)) {
+      lead = LIGHT_TONE;
+      body = body.slice(LIGHT_TONE.length);
+    }
+
+    if (TRAILING_TONES.has(body.slice(-1))) {
+      tone = body.slice(-1);
+      body = body.slice(0, -1);
+    }
+
+    return { lead, body, tone };
+  }
+
   function buildPracticeItems(chars, repeat, targetCount) {
     const items = [];
     const desiredCount = Number.isInteger(targetCount) ? targetCount : chars.length * repeat;
@@ -51,6 +72,7 @@
     calculateTargetRows,
     contextKeyFor,
     parsePhoneticData,
+    parseZhuyin,
   };
 
   root.CopybookCore = api;
