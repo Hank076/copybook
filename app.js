@@ -7,7 +7,16 @@ const state = {
 };
 
 const { buildPracticeItems, calculateTargetRows, contextKeyFor, parsePhoneticData } = window.CopybookCore;
-const COPY_GRID_HEIGHT_MM = 231;
+
+const PAGE = {
+  widthMm: 210,
+  heightMm: 297,
+  padHorizontalMm: 13,
+  padVerticalMm: 12,
+  bpmfPx: 28,
+  cellBorderPx: 1.2,
+};
+const PX_TO_MM = 25.4 / 96;
 
 const els = {
   textInput: document.querySelector("#textInput"),
@@ -15,17 +24,22 @@ const els = {
   fontSizeValue: document.querySelector("#fontSizeValue"),
   repeatCount: document.querySelector("#repeatCount"),
   columnCount: document.querySelector("#columnCount"),
-  columnCountValue: document.querySelector("#columnCountValue"),
   rowCount: document.querySelector("#rowCount"),
-  rowCountValue: document.querySelector("#rowCountValue"),
-  characterCount: document.querySelector("#characterCount"),
-  cellCount: document.querySelector("#cellCount"),
   bpmfToggle: document.querySelector("#bpmfToggle"),
   fillPageToggle: document.querySelector("#fillPageToggle"),
   printButton: document.querySelector("#printButton"),
   status: document.querySelector("#status"),
-  grid: document.querySelector("#grid"),
+  sheetFit: document.querySelector("#sheetFit"),
 };
+
+function maxRowsPerPage(columns, showBpmf) {
+  const gridWidthMm = PAGE.widthMm - PAGE.padHorizontalMm * 2;
+  const squareSideMm = gridWidthMm / columns - (showBpmf ? PAGE.bpmfPx * PX_TO_MM : 0);
+  const rowPitchMm = squareSideMm + PAGE.cellBorderPx * PX_TO_MM;
+  const usableHeightMm = PAGE.heightMm - PAGE.padVerticalMm * 2;
+
+  return Math.max(1, Math.floor(usableHeightMm / rowPitchMm));
+}
 
 function selectedValue(name) {
   return document.querySelector(`input[name="${name}"]:checked`).value;
@@ -153,7 +167,8 @@ function clampNumber(input, min, max, fallback) {
 
 function render() {
   const chars = charactersFromText(els.textInput.value);
-  const repeat = clampNumber(els.repeatCount, 1, 12, 1);
+  const repeat = clampNumber(els.repeatCount, 0, 12, 0);
+  const sentenceCount = repeat + 1;
   const columns = clampNumber(els.columnCount, 4, 8, 6);
   const preferredRows = clampNumber(els.rowCount, 8, 18, 11);
   const fontSize = Number.parseInt(els.fontSize.value, 10);
@@ -166,21 +181,15 @@ function render() {
   els.fontSizeValue.textContent = String(fontSize);
   els.repeatCount.value = String(repeat);
   els.columnCount.value = String(columns);
-  els.columnCountValue.textContent = String(columns);
   els.rowCount.value = String(preferredRows);
-  els.characterCount.textContent = String(chars.length);
-  els.grid.className = `grid ${gridStyle} ${inkMode}${showBpmf ? "" : " no-bpmf"}`;
-  els.grid.style.setProperty("--columns", String(columns));
-  els.grid.style.removeProperty("--rows");
-  els.grid.textContent = "";
 
-  const basePracticeItems = buildPracticeItems(chars, repeat);
-  const targetRows = calculateTargetRows(basePracticeItems.length, columns, preferredRows);
-  const targetCellCount = columns * targetRows;
-  const practiceItems = buildPracticeItems(chars, repeat, fillPage ? targetCellCount : undefined);
-  const cellHeight = COPY_GRID_HEIGHT_MM / targetRows;
+  const gridClassName = `grid ${gridStyle} ${inkMode}${showBpmf ? "" : " no-bpmf"}`;
+  const basePracticeItems = buildPracticeItems(chars, sentenceCount);
+  const totalRows = calculateTargetRows(basePracticeItems.length, columns, preferredRows);
+  const totalCellCount = columns * totalRows;
+  const practiceItems = buildPracticeItems(chars, sentenceCount, fillPage ? totalCellCount : undefined);
 
-  practiceItems.forEach(({ char, sourceIndex }) => {
+  const cells = practiceItems.map(({ char, sourceIndex }) => {
     const contextKey = contextKeyFor(chars, sourceIndex);
     const readings = state.readings.get(char) || [];
     const reading = selectedReadingFor(char, contextKey);
@@ -189,17 +198,31 @@ function render() {
       missing.add(char);
     }
 
-    els.grid.append(createCell(char, contextKey, reading, fontSize, readings.length > 1));
+    return createCell(char, contextKey, reading, fontSize, readings.length > 1);
   });
 
-  for (let index = practiceItems.length; index < targetCellCount; index += 1) {
-    els.grid.append(createPracticeCell());
+  for (let index = practiceItems.length; index < totalCellCount; index += 1) {
+    cells.push(createPracticeCell());
   }
 
-  els.cellCount.textContent = String(targetCellCount);
-  els.rowCountValue.textContent = String(targetRows);
-  els.grid.style.setProperty("--rows", String(targetRows));
-  els.grid.style.setProperty("--cell-height", `${cellHeight.toFixed(3)}mm`);
+  const rowsPerPage = maxRowsPerPage(columns, showBpmf);
+  els.sheetFit.textContent = "";
+
+  for (let rowOffset = 0; rowOffset < totalRows; rowOffset += rowsPerPage) {
+    const pageRows = Math.min(rowsPerPage, totalRows - rowOffset);
+    const grid = document.createElement("div");
+    grid.className = gridClassName;
+    grid.style.setProperty("--columns", String(columns));
+    grid.style.setProperty("--rows", String(pageRows));
+
+    const start = rowOffset * columns;
+    grid.append(...cells.slice(start, start + pageRows * columns));
+
+    const sheet = document.createElement("article");
+    sheet.className = "sheet";
+    sheet.append(grid);
+    els.sheetFit.append(sheet);
+  }
 
   updateStatus(Array.from(missing));
 }
@@ -222,7 +245,7 @@ function bindEvents() {
   }
 
   els.printButton.addEventListener("click", () => window.print());
-  els.grid.addEventListener("click", handleGridClick);
+  els.sheetFit.addEventListener("click", handleGridClick);
 }
 
 function handleGridClick(event) {

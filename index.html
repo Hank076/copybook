@@ -87,7 +87,7 @@
 
             <label class="field">
               <span>整句重複次數</span>
-              <input id="repeatCount" type="number" min="1" max="12" value="5">
+              <input id="repeatCount" type="number" min="0" max="12" value="0">
             </label>
           </div>
         </section>
@@ -110,47 +110,8 @@
       </aside>
 
       <section class="preview-stage" aria-label="練字帖預覽" data-od-id="preview-stage">
-        <div class="preview-toolbar" aria-label="預覽摘要">
-          <div>
-            <p class="eyebrow">即時預覽</p>
-            <h2>正式教材 A4 版面</h2>
-          </div>
-          <dl class="preview-stats">
-            <div>
-              <dt>練習字數</dt>
-              <dd id="characterCount">0</dd>
-            </div>
-            <div>
-              <dt>總格數</dt>
-              <dd id="cellCount">0</dd>
-            </div>
-            <div>
-              <dt>每列</dt>
-              <dd><span id="columnCountValue">6</span> 欄</dd>
-            </div>
-            <div>
-              <dt>每欄</dt>
-              <dd><span id="rowCountValue">11</span> 列</dd>
-            </div>
-          </dl>
-        </div>
-
         <div id="sheetFrame" class="sheet-frame">
-          <div id="sheetFit" class="sheet-fit">
-            <article id="sheet" class="sheet">
-              <header class="sheet-header">
-                <div>
-                  <p>教育部標準楷書</p>
-                  <h2>教育部國字標準字體練習</h2>
-                </div>
-                <dl>
-                  <div><dt>姓名</dt><dd></dd></div>
-                  <div><dt>日期</dt><dd></dd></div>
-                </dl>
-              </header>
-              <div id="grid" class="grid" aria-live="polite"></div>
-            </article>
-          </div>
+          <div id="sheetFit" class="sheet-fit" aria-live="polite"></div>
         </div>
       </section>
     </main>
