@@ -476,19 +476,27 @@ input[type="range"] {
 }
 
 .bpmf {
-  display: flex;
+  display: grid;
   align-items: center;
-  justify-content: center;
   min-width: 0;
   color: var(--fg);
 }
 
-.bpmf-col {
-  writing-mode: vertical-rl;
-  text-orientation: upright;
+.bpmf-syl {
+  display: grid;
+  grid-template-columns: 1fr 7px;
+  align-items: center;
+  width: 100%;
   font-family: var(--font-display);
   font-size: 15px;
   line-height: 1;
+}
+
+.bpmf-body {
+  grid-column: 1;
+  justify-self: center;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
   text-align: center;
 }
 
@@ -497,14 +505,16 @@ input[type="range"] {
   line-height: 0.7;
 }
 
-.bpmf-ruby {
-  ruby-position: over;
-  ruby-align: center;
+.bpmf-tone {
+  grid-column: 2;
+  justify-self: center;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-size: 0.55em;
 }
 
-.bpmf-tone {
-  font-size: 0.6em;
-  text-orientation: upright;
+.bpmf-syl rp {
+  display: none;
 }
 
 .grid.no-bpmf .cell {

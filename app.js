@@ -85,19 +85,21 @@ function renderZhuyin(container, reading) {
   if (!reading) return;
 
   const { lead, body, tone } = parseZhuyin(reading);
-  const column = document.createElement("span");
-  column.className = "bpmf-col";
+  const syllable = document.createElement("ruby");
+  syllable.className = "bpmf-syl";
+
+  const bodyEl = document.createElement("span");
+  bodyEl.className = "bpmf-body";
 
   if (lead) {
     const light = document.createElement("span");
     light.className = "bpmf-light";
     light.textContent = lead;
-    column.append(light);
+    bodyEl.append(light);
   }
 
-  const ruby = document.createElement("ruby");
-  ruby.className = "bpmf-ruby";
-  ruby.append(document.createTextNode(body));
+  bodyEl.append(document.createTextNode(body));
+  syllable.append(bodyEl);
 
   if (tone) {
     const rpOpen = document.createElement("rp");
@@ -107,11 +109,10 @@ function renderZhuyin(container, reading) {
     rt.textContent = tone;
     const rpClose = document.createElement("rp");
     rpClose.textContent = "）";
-    ruby.append(rpOpen, rt, rpClose);
+    syllable.append(rpOpen, rt, rpClose);
   }
 
-  column.append(ruby);
-  container.append(column);
+  container.append(syllable);
 }
 
 function updateReadingCells(contextKey, reading) {
