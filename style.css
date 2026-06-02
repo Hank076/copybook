@@ -266,10 +266,6 @@ input[type="range"] {
   align-items: end;
 }
 
-.control-grid .field:first-child {
-  grid-column: 1 / -1;
-}
-
 .actions {
   display: grid;
   grid-template-columns: 1fr;
@@ -392,6 +388,7 @@ input[type="range"] {
   place-items: center;
   min-width: 0;
   aspect-ratio: 1 / 1;
+  container-type: inline-size;
   border-right: 1.2px solid var(--fg);
   overflow: hidden;
 }
@@ -447,6 +444,7 @@ input[type="range"] {
   z-index: 1;
   color: var(--trace);
   font-family: var(--font-display);
+  font-size: calc(100cqi - 3px);
   line-height: 1;
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;

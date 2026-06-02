@@ -20,8 +20,6 @@ const PX_TO_MM = 25.4 / 96;
 
 const els = {
   textInput: document.querySelector("#textInput"),
-  fontSize: document.querySelector("#fontSize"),
-  fontSizeValue: document.querySelector("#fontSizeValue"),
   repeatCount: document.querySelector("#repeatCount"),
   columnCount: document.querySelector("#columnCount"),
   rowCount: document.querySelector("#rowCount"),
@@ -124,7 +122,7 @@ function updateReadingCells(contextKey, reading) {
   });
 }
 
-function createCell(char, contextKey, reading, fontSize, isPolyphonic) {
+function createCell(char, contextKey, reading, isPolyphonic) {
   const cell = document.createElement("div");
   cell.className = "cell";
   cell.dataset.char = char;
@@ -142,7 +140,6 @@ function createCell(char, contextKey, reading, fontSize, isPolyphonic) {
   const charNode = document.createElement("span");
   charNode.className = "char";
   charNode.textContent = char;
-  charNode.style.fontSize = `${fontSize}px`;
   square.append(charNode);
 
   const bpmf = document.createElement("span");
@@ -206,14 +203,12 @@ function render() {
   const sentenceCount = repeat + 1;
   const columns = clampNumber(els.columnCount, 4, 8, 6);
   const preferredRows = clampNumber(els.rowCount, 8, 18, 11);
-  const fontSize = Number.parseInt(els.fontSize.value, 10);
   const gridStyle = selectedValue("grid");
   const inkMode = selectedValue("ink");
   const showBpmf = els.bpmfToggle.checked;
   const fillPage = els.fillPageToggle.checked;
   const missing = new Set();
 
-  els.fontSizeValue.textContent = String(fontSize);
   els.repeatCount.value = String(repeat);
   els.columnCount.value = String(columns);
   els.rowCount.value = String(preferredRows);
@@ -233,7 +228,7 @@ function render() {
       missing.add(char);
     }
 
-    return createCell(char, contextKey, reading, fontSize, readings.length > 1);
+    return createCell(char, contextKey, reading, readings.length > 1);
   });
 
   for (let index = practiceItems.length; index < totalCellCount; index += 1) {
@@ -265,7 +260,6 @@ function render() {
 function bindEvents() {
   const controls = [
     els.textInput,
-    els.fontSize,
     els.repeatCount,
     els.columnCount,
     els.rowCount,
