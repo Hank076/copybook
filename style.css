@@ -370,7 +370,7 @@ input[type="range"] {
 
 .cell {
   display: grid;
-  grid-template-columns: 1fr 28px;
+  grid-template-columns: 1fr 34px;
   min-width: 0;
   direction: ltr;
   border-right: 0;
@@ -484,7 +484,7 @@ input[type="range"] {
 
 .bpmf-syl {
   display: grid;
-  grid-template-columns: 1fr 7px;
+  grid-template-columns: 9px 1fr 9px;
   align-items: center;
   width: 100%;
   font-family: var(--font-display);
@@ -493,7 +493,7 @@ input[type="range"] {
 }
 
 .bpmf-body {
-  grid-column: 1;
+  grid-column: 2;
   justify-self: center;
   writing-mode: vertical-rl;
   text-orientation: upright;
@@ -506,11 +506,11 @@ input[type="range"] {
 }
 
 .bpmf-tone {
-  grid-column: 2;
+  grid-column: 3;
   justify-self: center;
   writing-mode: vertical-rl;
   text-orientation: upright;
-  font-size: 0.55em;
+  font-size: 0.6em;
 }
 
 .bpmf-syl rp {

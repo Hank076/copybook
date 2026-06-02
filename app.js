@@ -13,7 +13,7 @@ const PAGE = {
   heightMm: 297,
   padHorizontalMm: 13,
   padVerticalMm: 12,
-  bpmfPx: 28,
+  bpmfPx: 34,
   cellBorderPx: 1.2,
 };
 const PX_TO_MM = 25.4 / 96;
