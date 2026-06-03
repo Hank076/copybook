@@ -3,7 +3,14 @@ import { createRequire } from "node:module";
 import { test } from "node:test";
 
 const require = createRequire(import.meta.url);
-const { buildPracticeItems, calculateTargetRows, contextKeyFor, parsePhoneticData, parsePracticeChars, parseZhuyin } = require("../copybook-core.js");
+const {
+  buildPracticeItems,
+  calculateTargetRows,
+  contextKeyFor,
+  parsePhoneticData,
+  parsePracticeChars,
+  parseZhuyin,
+} = require("../copybook-core.js");
 
 test("parsePhoneticData keeps all readings for a character", () => {
   const readings = parsePhoneticData("重\t91CD\tA\tㄓㄨㄥˋ\tㄔㄨㄥˊ\n");
@@ -32,7 +39,12 @@ test("buildPracticeItems repeats the whole phrase while preserving source index"
 });
 
 test("parsePracticeChars keeps only Chinese characters", () => {
-  assert.deepEqual(parsePracticeChars("陳A，瑋9ㄅ程🙂。𠮷"), ["陳", "瑋", "程", "𠮷"]);
+  assert.deepEqual(parsePracticeChars("陳A，瑋9ㄅ程🙂。𠮷"), [
+    "陳",
+    "瑋",
+    "程",
+    "𠮷",
+  ]);
 });
 
 test("buildPracticeItems fills to target count by repeating the phrase", () => {
@@ -56,9 +68,17 @@ test("calculateTargetRows keeps the selected rows unless content needs more", ()
 });
 
 test("parseZhuyin splits leading light tone, body, and trailing tone", () => {
-  assert.deepEqual(parseZhuyin("ㄔㄣˊ"), { lead: "", body: "ㄔㄣ", tone: "ˊ" });
+  assert.deepEqual(parseZhuyin("ㄔㄣˊ"), {
+    lead: "",
+    body: "ㄔㄣ",
+    tone: "ˊ",
+  });
   assert.deepEqual(parseZhuyin("ㄑㄧㄡ"), { lead: "", body: "ㄑㄧㄡ", tone: "" });
   assert.deepEqual(parseZhuyin("ㄨˇ"), { lead: "", body: "ㄨ", tone: "ˇ" });
-  assert.deepEqual(parseZhuyin("˙ㄌㄜ"), { lead: "˙", body: "ㄌㄜ", tone: "" });
+  assert.deepEqual(parseZhuyin("˙ㄌㄜ"), {
+    lead: "˙",
+    body: "ㄌㄜ",
+    tone: "",
+  });
   assert.deepEqual(parseZhuyin(""), { lead: "", body: "", tone: "" });
 });

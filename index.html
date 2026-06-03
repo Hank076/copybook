@@ -16,7 +16,7 @@
           <p>輸入要練習的國字，調整格線、注音與樣式後，即可產生可列印的練字帖。</p>
         </header>
 
-        <section class="panel-card" aria-labelledby="step-input" data-od-id="input-panel">
+        <section class="panel-card" aria-labelledby="step-input">
           <div class="section-heading">
             <span class="step-mark">1</span>
             <div>
@@ -27,11 +27,11 @@
 
           <label class="field">
             <span>要練習的字詞</span>
-            <textarea id="textInput" rows="4">陳瑋程</textarea>
+            <textarea id="textInput" rows="4">五隻小狗想把貓咪叫來天橋上一起看魚</textarea>
           </label>
         </section>
 
-        <section class="panel-card" aria-labelledby="step-style" data-od-id="style-panel">
+        <section class="panel-card" aria-labelledby="step-style">
           <div class="section-heading">
             <span class="step-mark">2</span>
             <div>
@@ -43,26 +43,50 @@
           <fieldset>
             <legend>格線樣式</legend>
             <div class="segmented grid-modes">
-              <label><input type="radio" name="grid" value="tian" checked><span>田字格</span></label>
-              <label><input type="radio" name="grid" value="mi"><span>米字格</span></label>
-              <label><input type="radio" name="grid" value="nine"><span>新式九宮格</span></label>
-              <label><input type="radio" name="grid" value="blank"><span>空白格</span></label>
+              <label>
+                <input type="radio" name="grid" value="tian" checked>
+                <span>田字格</span>
+              </label>
+              <label>
+                <input type="radio" name="grid" value="mi">
+                <span>米字格</span>
+              </label>
+              <label>
+                <input type="radio" name="grid" value="nine">
+                <span>新式九宮格</span>
+              </label>
+              <label>
+                <input type="radio" name="grid" value="blank">
+                <span>空白格</span>
+              </label>
             </div>
           </fieldset>
 
           <fieldset>
             <legend>顯示模式</legend>
             <div class="segmented ink-modes">
-              <label><input type="radio" name="ink" value="trace" checked><span>紅字描紅</span></label>
-              <label><input type="radio" name="ink" value="read"><span>黑字閱讀</span></label>
-              <label><input type="radio" name="ink" value="outline"><span>鏤空填充</span></label>
-              <label><input type="radio" name="ink" value="hide"><span>空白練習</span></label>
+              <label>
+                <input type="radio" name="ink" value="trace" checked>
+                <span>紅字描紅</span>
+              </label>
+              <label>
+                <input type="radio" name="ink" value="read">
+                <span>黑字閱讀</span>
+              </label>
+              <label>
+                <input type="radio" name="ink" value="outline">
+                <span>鏤空填充</span>
+              </label>
+              <label>
+                <input type="radio" name="ink" value="hide">
+                <span>空白練習</span>
+              </label>
             </div>
           </fieldset>
 
           <div class="switch-row">
             <label class="switch">
-              <input id="bpmfToggle" type="checkbox" checked>
+              <input id="zhuyinToggle" type="checkbox" checked>
               <span>顯示注音</span>
             </label>
 
@@ -90,7 +114,10 @@
           </div>
         </section>
 
-        <section class="panel-card action-card" aria-labelledby="step-print" data-od-id="print-panel">
+        <section
+          class="panel-card"
+          aria-labelledby="step-print"
+        >
           <div class="section-heading">
             <span class="step-mark">3</span>
             <div>
@@ -107,15 +134,15 @@
         </section>
       </aside>
 
-      <section class="preview-stage" aria-label="練字帖預覽" data-od-id="preview-stage">
-        <div id="sheetFrame" class="sheet-frame">
+      <section class="preview-stage" aria-label="練字帖預覽">
+        <div class="sheet-frame">
           <div id="sheetFit" class="sheet-fit" aria-live="polite"></div>
         </div>
       </section>
     </main>
 
     <script src="copybook-core.js"></script>
-    <script src="datas/phonic_table_Z.js"></script>
-    <script src="app.js"></script>
+    <script src="datas/zhuyin-table.js"></script>
+    <script src="copybook-app.js"></script>
   </body>
 </html>

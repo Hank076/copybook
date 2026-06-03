@@ -5,20 +5,20 @@
 }
 
 :root {
-  --bg: oklch(96% 0.018 92);
-  --surface: oklch(100% 0.004 95);
-  --fg: oklch(22% 0.025 250);
-  --muted: oklch(48% 0.018 245);
-  --border: oklch(88% 0.018 92);
-  --accent: oklch(49% 0.105 205);
-  --accent-soft: color-mix(in oklch, var(--accent) 12%, var(--surface));
-  --trace: oklch(62% 0.18 24);
-  --trace-soft: color-mix(in oklch, var(--trace) 14%, var(--surface));
-  --paper: oklch(99% 0.009 96);
-  --guide: oklch(78% 0.012 92);
-  --warning: oklch(43% 0.105 72);
+  --color-page-background: oklch(96% 0.018 92);
+  --color-surface: oklch(100% 0.004 95);
+  --color-text: oklch(22% 0.025 250);
+  --color-text-muted: oklch(48% 0.018 245);
+  --color-border: oklch(88% 0.018 92);
+  --color-accent: oklch(49% 0.105 205);
+  --color-accent-soft:
+    color-mix(in oklch, var(--color-accent) 12%, var(--color-surface));
+  --color-trace-text: oklch(62% 0.18 24);
+  --color-guide-line: oklch(78% 0.012 92);
+  --color-status-warning: oklch(43% 0.105 72);
   --font-display: "MOE Edu Kai", "BiauKai", "DFKai-SB", serif;
-  --font-body: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "Noto Sans TC",
+    "Microsoft JhengHei", system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
 }
 
@@ -34,10 +34,14 @@ html {
 
 body {
   margin: 0;
-  color: var(--fg);
+  color: var(--color-text);
   background:
-    radial-gradient(circle at top left, color-mix(in oklch, var(--accent) 12%, transparent), transparent 34rem),
-    var(--bg);
+    radial-gradient(
+      circle at top left,
+      color-mix(in oklch, var(--color-accent) 12%, transparent),
+      transparent 34rem
+    ),
+    var(--color-page-background);
   font-family: var(--font-body);
   line-height: 1.5;
   text-rendering: optimizeLegibility;
@@ -66,8 +70,13 @@ button {
   height: 100vh;
   overflow: auto;
   padding: 16px;
-  background: color-mix(in oklch, var(--surface) 88%, var(--bg));
-  border-right: 1px solid var(--border);
+  background:
+    color-mix(
+      in oklch,
+      var(--color-surface) 88%,
+      var(--color-page-background)
+    );
+  border-right: 1px solid var(--color-border);
 }
 
 .brand-panel {
@@ -75,14 +84,14 @@ button {
   gap: 10px;
   margin-bottom: 18px;
   padding: 16px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--color-border);
   border-radius: 18px;
-  background: var(--surface);
+  background: var(--color-surface);
 }
 
 .eyebrow {
   margin: 0;
-  color: var(--accent);
+  color: var(--color-accent);
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 700;
@@ -109,7 +118,7 @@ h2 {
 
 p {
   margin: 0;
-  color: var(--muted);
+  color: var(--color-text-muted);
   text-wrap: pretty;
 }
 
@@ -118,9 +127,9 @@ p {
   gap: 18px;
   margin-top: 14px;
   padding: 14px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--color-border);
   border-radius: 16px;
-  background: var(--surface);
+  background: var(--color-surface);
 }
 
 .section-heading {
@@ -136,8 +145,8 @@ p {
   width: 34px;
   height: 34px;
   border-radius: 999px;
-  background: var(--accent-soft);
-  color: var(--accent);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
   font-family: var(--font-mono);
   font-weight: 800;
 }
@@ -164,7 +173,7 @@ fieldset {
 legend,
 .field > span,
 .switch > span {
-  color: var(--fg);
+  color: var(--color-text);
   font-size: 14px;
   font-weight: 800;
 }
@@ -172,10 +181,15 @@ legend,
 textarea,
 input[type="number"] {
   width: 100%;
-  border: 1px solid var(--border);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
-  background: color-mix(in oklch, var(--surface) 94%, var(--bg));
-  color: var(--fg);
+  background:
+    color-mix(
+      in oklch,
+      var(--color-surface) 94%,
+      var(--color-page-background)
+    );
+  color: var(--color-text);
 }
 
 textarea {
@@ -192,18 +206,13 @@ input[type="number"] {
 
 textarea:focus,
 input[type="number"]:focus {
-  outline: 3px solid color-mix(in oklch, var(--accent) 18%, transparent);
-  border-color: var(--accent);
-}
-
-input[type="range"] {
-  width: 100%;
-  accent-color: var(--accent);
+  outline:
+    3px solid color-mix(in oklch, var(--color-accent) 18%, transparent);
+  border-color: var(--color-accent);
 }
 
 .segmented {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -228,10 +237,15 @@ input[type="range"] {
   place-items: center;
   min-height: 42px;
   padding: 8px 6px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
-  background: color-mix(in oklch, var(--surface) 88%, var(--bg));
-  color: var(--fg);
+  background:
+    color-mix(
+      in oklch,
+      var(--color-surface) 88%,
+      var(--color-page-background)
+    );
+  color: var(--color-text);
   font-size: 14px;
   font-weight: 800;
   text-align: center;
@@ -239,9 +253,19 @@ input[type="range"] {
 }
 
 .segmented input:checked + span {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--surface);
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-surface);
+}
+
+.segmented input:focus-visible + span {
+  outline:
+    3px solid color-mix(
+      in oklch,
+      var(--color-accent) 55%,
+      var(--color-surface)
+    );
+  outline-offset: 2px;
 }
 
 .switch-row {
@@ -255,15 +279,20 @@ input[type="range"] {
   align-items: center;
   min-height: 44px;
   padding: 10px 12px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
-  background: color-mix(in oklch, var(--surface) 90%, var(--bg));
+  background:
+    color-mix(
+      in oklch,
+      var(--color-surface) 90%,
+      var(--color-page-background)
+    );
 }
 
 .switch input {
   width: 22px;
   height: 22px;
-  accent-color: var(--accent);
+  accent-color: var(--color-accent);
 }
 
 .control-grid {
@@ -279,33 +308,21 @@ input[type="range"] {
   gap: 10px;
 }
 
-.primary-button,
-.secondary-button {
+.primary-button {
   min-height: 46px;
+  border: 1px solid var(--color-accent);
   border-radius: 12px;
+  background: var(--color-accent);
+  color: var(--color-surface);
   font-weight: 900;
   transition: transform 0.06s ease, filter 0.16s ease, border-color 0.16s ease;
 }
 
-.primary-button:active,
-.secondary-button:active {
+.primary-button:active {
   transform: translateY(1px);
 }
 
-.primary-button {
-  border: 1px solid var(--accent);
-  background: var(--accent);
-  color: var(--surface);
-}
-
-.secondary-button {
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--fg);
-}
-
-.primary-button:hover,
-.secondary-button:hover {
+.primary-button:hover {
   filter: brightness(0.97);
 }
 
@@ -313,8 +330,13 @@ input[type="range"] {
   min-height: 76px;
   padding: 12px 13px;
   border-radius: 12px;
-  background: color-mix(in oklch, var(--warning) 11%, var(--surface));
-  color: var(--warning);
+  background:
+    color-mix(
+      in oklch,
+      var(--color-status-warning) 11%,
+      var(--color-surface)
+    );
+  color: var(--color-status-warning);
   font-size: 13px;
   line-height: 1.55;
 }
@@ -350,23 +372,33 @@ input[type="range"] {
   margin: 0 auto;
   padding: 12mm 13mm;
   background: #fff;
-  border: 1px solid color-mix(in oklch, var(--border) 72%, var(--fg));
-  box-shadow: 0 22px 48px color-mix(in oklch, var(--fg) 18%, transparent);
+  border:
+    1px solid color-mix(
+      in oklch,
+      var(--color-border) 72%,
+      var(--color-text)
+    );
+  box-shadow:
+    0 22px 48px color-mix(
+      in oklch,
+      var(--color-text) 18%,
+      transparent
+    );
 }
 
 .grid {
-  --columns: 6;
-  --rows: 11;
+  --grid-column-count: 6;
+  --grid-row-count: 11;
   display: grid;
   direction: rtl;
   grid-auto-flow: column;
-  grid-template-rows: repeat(var(--rows), auto);
+  grid-template-rows: repeat(var(--grid-row-count), auto);
   grid-auto-columns: minmax(0, 1fr);
-  grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
+  grid-template-columns: repeat(var(--grid-column-count), minmax(0, 1fr));
   gap: 0;
   align-items: start;
-  border-top: 1.2px solid var(--fg);
-  border-right: 1.2px solid var(--fg);
+  border-top: 1.2px solid var(--color-text);
+  border-right: 1.2px solid var(--color-text);
 }
 
 .cell {
@@ -374,19 +406,13 @@ input[type="range"] {
   grid-template-columns: 1fr 34px;
   min-width: 0;
   direction: ltr;
-  border-right: 0;
-  border-bottom: 1.2px solid var(--fg);
-  border-left: 1.2px solid var(--fg);
-  border-top: 0;
+  border-bottom: 1.2px solid var(--color-text);
+  border-left: 1.2px solid var(--color-text);
   break-inside: avoid;
 }
 
 .cell.polyphonic {
   cursor: pointer;
-}
-
-.practice-cell {
-  background: transparent;
 }
 
 .square {
@@ -396,7 +422,7 @@ input[type="range"] {
   min-width: 0;
   aspect-ratio: 1 / 1;
   container-type: inline-size;
-  border-right: 1.2px solid var(--fg);
+  border-right: 1.2px solid var(--color-text);
   overflow: hidden;
 }
 
@@ -405,7 +431,7 @@ input[type="range"] {
   pointer-events: none;
   z-index: 0;
   display: none;
-  border-color: var(--guide);
+  border-color: var(--color-guide-line);
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;
 }
@@ -414,14 +440,14 @@ input[type="range"] {
   top: 0;
   bottom: 0;
   left: 50%;
-  border-left: 1px dashed var(--guide);
+  border-left: 1px dashed var(--color-guide-line);
 }
 
 .center-h {
   top: 50%;
   left: 0;
   right: 0;
-  border-top: 1px dashed var(--guide);
+  border-top: 1px dashed var(--color-guide-line);
 }
 
 .diagonal-a,
@@ -429,7 +455,7 @@ input[type="range"] {
   top: 50%;
   left: -21%;
   width: 142%;
-  border-top: 1px dashed var(--guide);
+  border-top: 1px dashed var(--color-guide-line);
 }
 
 .diagonal-a {
@@ -458,7 +484,7 @@ input[type="range"] {
   top: 0;
   bottom: 0;
   left: 44.5cqw;
-  border-left: 1px dashed var(--guide);
+  border-left: 1px dashed var(--color-guide-line);
 }
 
 .grid.nine .center-h {
@@ -471,13 +497,13 @@ input[type="range"] {
   top: 59.8cqw;
   left: 0;
   right: 0;
-  border-top: 1px dashed var(--guide);
+  border-top: 1px dashed var(--color-guide-line);
 }
 
 .char {
   position: relative;
   z-index: 1;
-  color: var(--trace);
+  color: var(--color-trace-text);
   font-family: var(--font-display);
   font-size: calc(100cqi - 3px);
   line-height: 1;
@@ -486,17 +512,23 @@ input[type="range"] {
 }
 
 .grid.read .char {
-  color: var(--fg);
+  color: var(--color-text);
 }
 
 .grid.outline .char {
   color: transparent;
-  -webkit-text-stroke: 1.2px color-mix(in oklch, var(--fg) 38%, var(--surface));
+  -webkit-text-stroke:
+    1.2px color-mix(
+      in oklch,
+      var(--color-text) 38%,
+      var(--color-surface)
+    );
 }
 
 @supports not (-webkit-text-stroke: 1px black) {
   .grid.outline .char {
-    color: color-mix(in oklch, var(--fg) 28%, var(--surface));
+    color:
+      color-mix(in oklch, var(--color-text) 28%, var(--color-surface));
   }
 }
 
@@ -504,14 +536,14 @@ input[type="range"] {
   visibility: hidden;
 }
 
-.bpmf {
+.zhuyin {
   display: grid;
   align-items: center;
   min-width: 0;
-  color: var(--fg);
+  color: var(--color-text);
 }
 
-.bpmf-syl {
+.zhuyin-syllable {
   display: grid;
   grid-template-columns: 9px 1fr 9px;
   align-items: center;
@@ -522,7 +554,7 @@ input[type="range"] {
   line-height: 1;
 }
 
-.bpmf-body {
+.zhuyin-body {
   grid-column: 2;
   justify-self: center;
   writing-mode: vertical-rl;
@@ -530,29 +562,29 @@ input[type="range"] {
   text-align: center;
 }
 
-.bpmf-light {
+.zhuyin-light-tone {
   font-size: 0.72em;
   line-height: 0.7;
 }
 
-.bpmf-tone {
+.zhuyin-tone {
   position: absolute;
   right: 0;
   bottom: 9px;
   writing-mode: vertical-rl;
   text-orientation: upright;
-  font-size: 0.55em;
+  font-size: 1em;
 }
 
-.bpmf-syl rp {
+.zhuyin-syllable rp {
   display: none;
 }
 
-.grid.no-bpmf .cell {
+.grid.no-zhuyin .cell {
   grid-template-columns: 1fr 0;
 }
 
-.grid.no-bpmf .bpmf {
+.grid.no-zhuyin .zhuyin {
   display: none;
 }
 
@@ -565,7 +597,7 @@ input[type="range"] {
     position: static;
     height: auto;
     border-right: 0;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--color-border);
   }
 
   .preview-stage {
@@ -601,7 +633,7 @@ input[type="range"] {
 
 @media print {
   body {
-    background: var(--surface);
+    background: var(--color-surface);
   }
 
   .workspace-panel {
@@ -625,7 +657,6 @@ input[type="range"] {
 
   .sheet-fit {
     display: block;
-    gap: 0;
   }
 
   .sheet {
@@ -635,7 +666,6 @@ input[type="range"] {
     margin: 0;
     border: 0;
     box-shadow: none;
-    transform: none;
     break-inside: avoid;
   }
 

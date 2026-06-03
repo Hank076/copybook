@@ -1,6 +1,6 @@
 (function initCopybookCore(root) {
   function parsePhoneticData(text) {
-    const map = new Map();
+    const readingsByChar = new Map();
 
     for (const row of text.split(/\r?\n/)) {
       if (!row.trim()) continue;
@@ -9,16 +9,18 @@
       const char = columns[0];
       const readings = columns.slice(3).filter(Boolean);
 
-      if (char && readings.length > 0 && !map.has(char)) {
-        map.set(char, readings);
+      if (char && readings.length > 0 && !readingsByChar.has(char)) {
+        readingsByChar.set(char, readings);
       }
     }
 
-    return map;
+    return readingsByChar;
   }
 
-  function contextKeyFor(chars, index) {
-    return `${chars[index - 1] || ""}|${chars[index] || ""}|${chars[index + 1] || ""}`;
+  function contextKeyFor(practiceChars, index) {
+    return `${practiceChars[index - 1] || ""}|${practiceChars[index] || ""}|${
+      practiceChars[index + 1] || ""
+    }`;
   }
 
   function parsePracticeChars(text) {
@@ -29,40 +31,46 @@
   const TRAILING_TONES = new Set(["ˊ", "ˇ", "ˋ", "ˉ"]);
 
   function parseZhuyin(reading) {
-    let body = reading || "";
-    let lead = "";
-    let tone = "";
+    let phoneticBody = reading || "";
+    let leadingToneMark = "";
+    let trailingToneMark = "";
 
-    if (body.startsWith(LIGHT_TONE)) {
-      lead = LIGHT_TONE;
-      body = body.slice(LIGHT_TONE.length);
+    if (phoneticBody.startsWith(LIGHT_TONE)) {
+      leadingToneMark = LIGHT_TONE;
+      phoneticBody = phoneticBody.slice(LIGHT_TONE.length);
     }
 
-    if (TRAILING_TONES.has(body.slice(-1))) {
-      tone = body.slice(-1);
-      body = body.slice(0, -1);
+    if (TRAILING_TONES.has(phoneticBody.slice(-1))) {
+      trailingToneMark = phoneticBody.slice(-1);
+      phoneticBody = phoneticBody.slice(0, -1);
     }
 
-    return { lead, body, tone };
+    return {
+      lead: leadingToneMark,
+      body: phoneticBody,
+      tone: trailingToneMark,
+    };
   }
 
-  function buildPracticeItems(chars, repeat, targetCount) {
-    const items = [];
-    const desiredCount = Number.isInteger(targetCount) ? targetCount : chars.length * repeat;
+  function buildPracticeItems(practiceChars, repeatCount, targetCount) {
+    const practiceItems = [];
+    const targetItemCount = Number.isInteger(targetCount)
+      ? targetCount
+      : practiceChars.length * repeatCount;
 
-    if (chars.length === 0 || desiredCount <= 0) {
-      return items;
+    if (practiceChars.length === 0 || targetItemCount <= 0) {
+      return practiceItems;
     }
 
-    while (items.length < desiredCount) {
-      chars.forEach((char, sourceIndex) => {
-        if (items.length < desiredCount) {
-          items.push({ char, sourceIndex });
+    while (practiceItems.length < targetItemCount) {
+      practiceChars.forEach((char, sourceIndex) => {
+        if (practiceItems.length < targetItemCount) {
+          practiceItems.push({ char, sourceIndex });
         }
       });
     }
 
-    return items;
+    return practiceItems;
   }
 
   function calculateTargetRows(filledCellCount, columns, preferredRows) {
