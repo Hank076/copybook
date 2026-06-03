@@ -21,6 +21,10 @@
     return `${chars[index - 1] || ""}|${chars[index] || ""}|${chars[index + 1] || ""}`;
   }
 
+  function parsePracticeChars(text) {
+    return Array.from(text).filter((char) => /\p{Script=Han}/u.test(char));
+  }
+
   const LIGHT_TONE = "˙";
   const TRAILING_TONES = new Set(["ˊ", "ˇ", "ˋ", "ˉ"]);
 
@@ -72,6 +76,7 @@
     calculateTargetRows,
     contextKeyFor,
     parsePhoneticData,
+    parsePracticeChars,
     parseZhuyin,
   };
 

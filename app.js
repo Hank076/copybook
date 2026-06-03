@@ -6,7 +6,7 @@ const state = {
   lastSelection: "",
 };
 
-const { buildPracticeItems, calculateTargetRows, contextKeyFor, parsePhoneticData, parseZhuyin } = window.CopybookCore;
+const { buildPracticeItems, calculateTargetRows, contextKeyFor, parsePhoneticData, parsePracticeChars, parseZhuyin } = window.CopybookCore;
 
 const PAGE = {
   widthMm: 210,
@@ -44,7 +44,7 @@ function selectedValue(name) {
 }
 
 function charactersFromText(text) {
-  return Array.from(text).filter((char) => !/\s|[，。！？、；：「」『』（）()]/u.test(char));
+  return parsePracticeChars(text);
 }
 
 async function loadPhoneticData() {

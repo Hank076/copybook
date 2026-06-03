@@ -3,7 +3,7 @@ import { createRequire } from "node:module";
 import { test } from "node:test";
 
 const require = createRequire(import.meta.url);
-const { buildPracticeItems, calculateTargetRows, contextKeyFor, parsePhoneticData, parseZhuyin } = require("../copybook-core.js");
+const { buildPracticeItems, calculateTargetRows, contextKeyFor, parsePhoneticData, parsePracticeChars, parseZhuyin } = require("../copybook-core.js");
 
 test("parsePhoneticData keeps all readings for a character", () => {
   const readings = parsePhoneticData("重\t91CD\tA\tㄓㄨㄥˋ\tㄔㄨㄥˊ\n");
@@ -29,6 +29,10 @@ test("buildPracticeItems repeats the whole phrase while preserving source index"
     { char: "陳", sourceIndex: 0 },
     { char: "瑋", sourceIndex: 1 },
   ]);
+});
+
+test("parsePracticeChars keeps only Chinese characters", () => {
+  assert.deepEqual(parsePracticeChars("陳A，瑋9ㄅ程🙂。𠮷"), ["陳", "瑋", "程", "𠮷"]);
 });
 
 test("buildPracticeItems fills to target count by repeating the phrase", () => {
