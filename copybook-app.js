@@ -2,7 +2,10 @@ const appState = {
   zhuyinReadingsByChar: new Map(),
   selectedReadingIndexByContext: new Map(),
   dataReady: false,
+  additionalDataReady: false,
+  additionalDataLoading: false,
   dataError: "",
+  additionalDataError: "",
   lastSelection: "",
 };
 
@@ -91,14 +94,16 @@ function currentMissingPracticeChars(practiceChars) {
 
 async function loadPhoneticData() {
   try {
-    if (typeof window.ZHUYIN_TABLE === "string") {
-      appState.zhuyinReadingsByChar = parsePhoneticData(window.ZHUYIN_TABLE);
+    if (typeof window.PHONIC_TABLE_Z_4808 === "string") {
+      appState.zhuyinReadingsByChar = parsePhoneticData(
+        window.PHONIC_TABLE_Z_4808,
+      );
       appState.dataReady = true;
       appState.dataError = "";
       return;
     }
 
-    const response = await fetch("datas/phonic_table_Z.txt");
+    const response = await fetch("datas/phonic_table_Z_4808.txt");
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
@@ -111,6 +116,50 @@ async function loadPhoneticData() {
   } catch (error) {
     appState.dataReady = false;
     appState.dataError = error instanceof Error ? error.message : "未知錯誤";
+  }
+}
+
+function mergeReadings(readingsByChar) {
+  for (const [char, readings] of readingsByChar) {
+    if (!appState.zhuyinReadingsByChar.has(char)) {
+      appState.zhuyinReadingsByChar.set(char, readings);
+    }
+  }
+}
+
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = src;
+    script.onload = resolve;
+    script.onerror = () => reject(new Error(`無法載入 ${src}`));
+    document.head.append(script);
+  });
+}
+
+async function loadAdditionalPhoneticData() {
+  if (appState.additionalDataReady || appState.additionalDataLoading) return;
+
+  appState.additionalDataLoading = true;
+  appState.additionalDataError = "";
+  updateStatus(
+    currentMissingPracticeChars(parsePracticeChars(dom.textInput.value)),
+  );
+
+  try {
+    await loadScript("datas/phonic_table_Z_other.js");
+
+    if (typeof window.PHONIC_TABLE_Z_OTHER !== "string") {
+      throw new Error("缺少 PHONIC_TABLE_Z_OTHER");
+    }
+
+    mergeReadings(parsePhoneticData(window.PHONIC_TABLE_Z_OTHER));
+    appState.additionalDataReady = true;
+  } catch (error) {
+    appState.additionalDataError =
+      error instanceof Error ? error.message : "未知錯誤";
+  } finally {
+    appState.additionalDataLoading = false;
   }
 }
 
@@ -246,6 +295,18 @@ function updateStatus(missingChars) {
   }
 
   if (missingChars.length > 0) {
+    if (appState.additionalDataLoading) {
+      dom.status.textContent =
+        `${loadedMessage}正在補載其餘注音資料：${missingChars.join("、")}。`;
+      return;
+    }
+
+    if (appState.additionalDataError) {
+      dom.status.textContent =
+        `${loadedMessage}其餘注音資料載入失敗：${appState.additionalDataError}。\n查不到注音：${missingChars.join("、")}。${polyphonicHint}`;
+      return;
+    }
+
     dom.status.textContent =
       `${loadedMessage}查不到注音：${missingChars.join("、")}。${polyphonicHint}`;
     return;
@@ -357,7 +418,17 @@ function render() {
     rowsPerPage,
     gridClassName: gridClassNameFor(settings),
   });
-  updateStatus(currentMissingPracticeChars(practiceChars));
+  const missingChars = currentMissingPracticeChars(practiceChars);
+  updateStatus(missingChars);
+
+  if (
+    missingChars.length > 0 &&
+    !appState.additionalDataReady &&
+    !appState.additionalDataLoading &&
+    !appState.additionalDataError
+  ) {
+    loadAdditionalPhoneticData().then(render);
+  }
 }
 
 function bindEvents() {
