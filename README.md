@@ -2,11 +2,13 @@
 
 一個可在瀏覽器直接使用的 A4 國字字帖產生器。輸入國字後，網站會依設定產生可列印的字帖，並自動顯示注音。
 
+正式網站：[https://copybook.hankchen.info/](https://copybook.hankchen.info/)
+
 ## 功能
 
 - 產生 A4 直式國字字帖。
 - 支援田字格、米字格、新式九宮格與空白格。
-- 支援紅字、黑字、鏤空與空白練習模式。
+- 支援紅字、黑字、灰字、鏤空與空白練習模式。
 - 可顯示或隱藏注音。
 - 多音字可開啟選音視窗，依前後各 1 字上下文同步套用讀音。
 - 可設定欄數、列數、重複次數，或自動填滿頁面。
@@ -45,6 +47,8 @@ http://127.0.0.1:8765/
 - `tests/copybook-core.test.mjs`：核心函式測試。
 - `datas/phonic_table_Z.txt`：注音查表資料。
 - `fonts/edukai-5.1_20251208.ttf`：教育部標準楷書字型檔。
+- `favicon/`：網站 favicon、Apple touch icon 與 web app manifest 圖示。
+- `robots.txt`、`sitemap.xml`：搜尋引擎爬取與索引用檔案。
 
 執行測試：
 
