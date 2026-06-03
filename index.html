@@ -141,6 +141,22 @@
       </section>
     </main>
 
+    <dialog id="readingDialog" class="reading-dialog" aria-labelledby="readingDialogTitle">
+      <div class="reading-dialog__panel">
+        <header class="reading-dialog__header">
+          <div>
+            <p class="eyebrow">選擇注音</p>
+            <h2 id="readingDialogTitle">選擇讀音</h2>
+          </div>
+          <form method="dialog">
+            <button class="icon-button" type="submit" aria-label="關閉選擇注音視窗">×</button>
+          </form>
+        </header>
+
+        <div id="readingChoices" class="reading-choices"></div>
+      </div>
+    </dialog>
+
     <script src="copybook-core.js"></script>
     <script src="datas/zhuyin-table.js"></script>
     <script src="copybook-app.js"></script>

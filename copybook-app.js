@@ -13,6 +13,7 @@ const {
   parsePhoneticData,
   parsePracticeChars,
   parseZhuyin,
+  readingSelectionFor,
 } = window.CopybookCore;
 
 const PAGE = {
@@ -33,6 +34,9 @@ const dom = {
   zhuyinToggle: document.querySelector("#zhuyinToggle"),
   fillPageToggle: document.querySelector("#fillPageToggle"),
   printButton: document.querySelector("#printButton"),
+  readingChoices: document.querySelector("#readingChoices"),
+  readingDialog: document.querySelector("#readingDialog"),
+  readingDialogTitle: document.querySelector("#readingDialogTitle"),
   status: document.querySelector("#status"),
   sheetFit: document.querySelector("#sheetFit"),
 };
@@ -97,7 +101,7 @@ function selectedReadingFor(char, contextKey) {
   const selectedIndex =
     appState.selectedReadingIndexByContext.get(contextKey) || 0;
 
-  return readings[selectedIndex] || "";
+  return readingSelectionFor(readings, selectedIndex).reading;
 }
 
 function renderZhuyin(zhuyinContainer, reading) {
@@ -160,7 +164,10 @@ function createCell(char, contextKey, reading, isPolyphonic) {
 
   if (isPolyphonic) {
     cell.classList.add("polyphonic");
-    cell.title = "點選切換讀音";
+    cell.tabIndex = 0;
+    cell.title = "可選擇注音";
+    cell.setAttribute("role", "button");
+    cell.setAttribute("aria-label", `${char} 是多音字，可選擇注音`);
   }
 
   const charNode = document.createElement("span");
@@ -358,6 +365,8 @@ function bindEvents() {
 
   dom.printButton.addEventListener("click", () => window.print());
   dom.sheetFit.addEventListener("click", handleGridClick);
+  dom.sheetFit.addEventListener("keydown", handleGridKeydown);
+  dom.readingChoices.addEventListener("click", handleReadingChoiceClick);
 }
 
 function handleGridClick(event) {
@@ -365,23 +374,83 @@ function handleGridClick(event) {
 
   if (!cell) return;
 
+  openReadingDialog(cell);
+}
+
+function handleGridKeydown(event) {
+  if (event.key !== "Enter" && event.key !== " ") return;
+
+  const cell = event.target.closest(".cell");
+
+  if (!cell) return;
+
+  event.preventDefault();
+  openReadingDialog(cell);
+}
+
+function openReadingDialog(cell) {
   const char = cell.dataset.char;
   const contextKey = cell.dataset.contextKey;
   const readings = appState.zhuyinReadingsByChar.get(char) || [];
 
   if (!char || !contextKey || readings.length < 2) return;
 
-  const currentIndex =
+  const selectedIndex =
     appState.selectedReadingIndexByContext.get(contextKey) || 0;
-  const nextIndex = (currentIndex + 1) % readings.length;
 
-  appState.selectedReadingIndexByContext.set(contextKey, nextIndex);
+  dom.readingDialog.dataset.char = char;
+  dom.readingDialog.dataset.contextKey = contextKey;
+  dom.readingDialogTitle.textContent = `選擇「${char}」的注音`;
+  renderReadingChoices(readings, selectedIndex);
+
+  if (typeof dom.readingDialog.showModal === "function") {
+    dom.readingDialog.showModal();
+  }
+}
+
+function renderReadingChoices(readings, selectedIndex) {
+  dom.readingChoices.textContent = "";
+
+  readings.forEach((reading, index) => {
+    const button = document.createElement("button");
+    button.className = "reading-choice";
+    button.type = "button";
+    button.dataset.readingIndex = String(index);
+    button.setAttribute("aria-pressed", String(index === selectedIndex));
+
+    const readingLabel = document.createElement("span");
+    readingLabel.textContent = reading;
+
+    const indexLabel = document.createElement("span");
+    indexLabel.className = "reading-choice__index";
+    indexLabel.textContent = index === selectedIndex ? "目前" : `選項 ${index + 1}`;
+
+    button.append(readingLabel, indexLabel);
+    dom.readingChoices.append(button);
+  });
+}
+
+function handleReadingChoiceClick(event) {
+  const button = event.target.closest(".reading-choice");
+
+  if (!button) return;
+
+  const char = dom.readingDialog.dataset.char;
+  const contextKey = dom.readingDialog.dataset.contextKey;
+  const readings = appState.zhuyinReadingsByChar.get(char) || [];
+  const requestedIndex = Number.parseInt(button.dataset.readingIndex, 10);
+  const { index, reading } = readingSelectionFor(readings, requestedIndex);
+
+  if (!char || !contextKey || readings.length < 2) return;
+
+  appState.selectedReadingIndexByContext.set(contextKey, index);
   appState.lastSelection =
-    `「${char}」已切換為 ${readings[nextIndex]}。相同前後各 1 字上下文的格子會同步更新。`;
-  updateReadingCells(contextKey, readings[nextIndex]);
+    `「${char}」已切換為 ${reading}。相同前後各 1 字上下文的格子會同步更新。`;
+  updateReadingCells(contextKey, reading);
   updateStatus(
     currentMissingPracticeChars(parsePracticeChars(dom.textInput.value)),
   );
+  dom.readingDialog.close();
 }
 
 bindEvents();

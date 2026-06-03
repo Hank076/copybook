@@ -27,6 +27,20 @@
     return Array.from(text).filter((char) => /\p{Script=Han}/u.test(char));
   }
 
+  function readingSelectionFor(readings, requestedIndex) {
+    const index =
+      Number.isInteger(requestedIndex) &&
+      requestedIndex >= 0 &&
+      requestedIndex < readings.length
+        ? requestedIndex
+        : 0;
+
+    return {
+      index,
+      reading: readings[index] || "",
+    };
+  }
+
   const LIGHT_TONE = "˙";
   const TRAILING_TONES = new Set(["ˊ", "ˇ", "ˋ", "ˉ"]);
 
@@ -86,6 +100,7 @@
     parsePhoneticData,
     parsePracticeChars,
     parseZhuyin,
+    readingSelectionFor,
   };
 
   root.CopybookCore = api;

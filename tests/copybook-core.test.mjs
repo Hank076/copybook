@@ -7,6 +7,7 @@ const {
   buildPracticeItems,
   calculateTargetRows,
   contextKeyFor,
+  readingSelectionFor,
   parsePhoneticData,
   parsePracticeChars,
   parseZhuyin,
@@ -81,4 +82,19 @@ test("parseZhuyin splits leading light tone, body, and trailing tone", () => {
     tone: "",
   });
   assert.deepEqual(parseZhuyin(""), { lead: "", body: "", tone: "" });
+});
+
+test("readingSelectionFor returns a valid selected reading", () => {
+  assert.deepEqual(readingSelectionFor(["ㄒㄧㄥˊ", "ㄏㄤˊ"], 1), {
+    index: 1,
+    reading: "ㄏㄤˊ",
+  });
+  assert.deepEqual(readingSelectionFor(["ㄒㄧㄥˊ", "ㄏㄤˊ"], 9), {
+    index: 0,
+    reading: "ㄒㄧㄥˊ",
+  });
+  assert.deepEqual(readingSelectionFor([], 0), {
+    index: 0,
+    reading: "",
+  });
 });
