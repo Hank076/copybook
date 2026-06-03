@@ -565,6 +565,10 @@ input[type="number"]:focus {
   color: var(--color-text);
 }
 
+.grid.gray .char {
+  color: #d0d0d0;
+}
+
 .grid.outline .char {
   color: transparent;
   -webkit-text-stroke:
