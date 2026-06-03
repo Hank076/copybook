@@ -34,6 +34,7 @@ const dom = {
   zhuyinToggle: document.querySelector("#zhuyinToggle"),
   fillPageToggle: document.querySelector("#fillPageToggle"),
   printButton: document.querySelector("#printButton"),
+  authorLink: document.querySelector("#authorLink"),
   readingChoices: document.querySelector("#readingChoices"),
   readingDialog: document.querySelector("#readingDialog"),
   readingDialogTitle: document.querySelector("#readingDialogTitle"),
@@ -53,6 +54,23 @@ function maxRowsPerPage(columns, showZhuyin) {
 
 function selectedValue(name) {
   return document.querySelector(`input[name="${name}"]:checked`).value;
+}
+
+function trackEvent(eventName, eventParams = {}) {
+  if (typeof window.gtag !== "function") return;
+
+  window.gtag("event", eventName, eventParams);
+}
+
+function contextPartsFor(contextKey) {
+  const [previousChar = "", selectedChar = "", nextChar = ""] =
+    contextKey.split("|");
+
+  return {
+    previousChar,
+    selectedChar,
+    nextChar,
+  };
 }
 
 function currentMissingPracticeChars(practiceChars) {
@@ -363,7 +381,23 @@ function bindEvents() {
     control.addEventListener("change", render);
   }
 
-  dom.printButton.addEventListener("click", () => window.print());
+  dom.printButton.addEventListener("click", () => {
+    const settings = readRenderSettings();
+
+    trackEvent("print_button_click", {
+      grid_style: settings.gridStyle,
+      font_style: settings.inkMode,
+      show_zhuyin: settings.showZhuyin,
+      fill_page: settings.fillPage,
+    });
+
+    window.print();
+  });
+  dom.authorLink.addEventListener("click", () => {
+    trackEvent("author_link_click", {
+      link_url: dom.authorLink.href,
+    });
+  });
   dom.sheetFit.addEventListener("click", handleGridClick);
   dom.sheetFit.addEventListener("keydown", handleGridKeydown);
   dom.readingChoices.addEventListener("click", handleReadingChoiceClick);
@@ -442,6 +476,16 @@ function handleReadingChoiceClick(event) {
   const { index, reading } = readingSelectionFor(readings, requestedIndex);
 
   if (!char || !contextKey || readings.length < 2) return;
+
+  const { previousChar, selectedChar, nextChar } = contextPartsFor(contextKey);
+
+  trackEvent("reading_choice_click", {
+    char: selectedChar || char,
+    previous_char: previousChar,
+    next_char: nextChar,
+    reading,
+    reading_index: index,
+  });
 
   appState.selectedReadingIndexByContext.set(contextKey, index);
   appState.lastSelection =
