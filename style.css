@@ -112,7 +112,7 @@ h1 {
 }
 
 h2 {
-  font-size: 21px;
+  font-size: 20px;
   line-height: 1.25;
 }
 
@@ -174,7 +174,7 @@ p {
 
 .section-heading p {
   margin-top: 3px;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .field,
@@ -358,7 +358,7 @@ input[type="number"]:focus {
       var(--color-surface)
     );
   color: var(--color-status-warning);
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.55;
   white-space: pre-line;
 }
@@ -453,7 +453,7 @@ input[type="number"]:focus {
   border-radius: 4px;
   background: var(--color-accent-soft);
   color: var(--color-accent);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 900;
   line-height: 1.25;
   white-space: nowrap;
@@ -555,7 +555,7 @@ input[type="number"]:focus {
   z-index: 1;
   color: var(--color-trace-text);
   font-family: var(--font-display);
-  font-size: calc(100cqi - 3px);
+  font-size: calc(100cqi - 4px);
   line-height: 1;
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;
@@ -600,7 +600,7 @@ input[type="number"]:focus {
   position: relative;
   width: 100%;
   font-family: var(--font-display);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1;
 }
 
