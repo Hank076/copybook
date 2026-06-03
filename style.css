@@ -139,6 +139,20 @@ p {
   text-underline-offset: 3px;
 }
 
+.about-card {
+  gap: 12px;
+}
+
+.about-card > p {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.about-card a {
+  font-weight: 700;
+}
+
 .section-heading {
   display: grid;
   grid-template-columns: 34px 1fr;
