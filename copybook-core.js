@@ -7,7 +7,8 @@
 
       const columns = row.split("\t");
       const char = columns[0];
-      const readings = columns.slice(3).filter(Boolean);
+      const readingsStartIndex = /^[0-9A-F]+$/i.test(columns[1]) ? 3 : 1;
+      const readings = columns.slice(readingsStartIndex).filter(Boolean);
 
       if (char && readings.length > 0 && !readingsByChar.has(char)) {
         readingsByChar.set(char, readings);

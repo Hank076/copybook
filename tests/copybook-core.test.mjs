@@ -19,6 +19,12 @@ test("parsePhoneticData keeps all readings for a character", () => {
   assert.deepEqual(readings.get("重"), ["ㄓㄨㄥˋ", "ㄔㄨㄥˊ"]);
 });
 
+test("parsePhoneticData supports compact generated rows", () => {
+  const readings = parsePhoneticData("重\tㄓㄨㄥˋ\tㄔㄨㄥˊ\n");
+
+  assert.deepEqual(readings.get("重"), ["ㄓㄨㄥˋ", "ㄔㄨㄥˊ"]);
+});
+
 test("contextKeyFor includes one previous and one next character", () => {
   const chars = ["行", "重", "行", "重"];
 
