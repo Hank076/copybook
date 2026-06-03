@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>國字標準字體練字帖產生器</title>
+    <title>國字標準字體字帖產生器</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23fffefa'/%3E%3Cpath d='M7 8h18v18H7zM16 8v18M7 17h18' fill='none' stroke='%232b3a42' stroke-width='1.6'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-size='14' font-family='serif' fill='%23d75043'%3E字%3C/text%3E%3C/svg%3E">
     <link rel="stylesheet" href="style.css">
   </head>
@@ -12,16 +12,18 @@
       <aside class="workspace-panel" aria-label="練字帖設定">
         <header class="brand-panel">
           <p class="eyebrow">A4 國字練字帖</p>
-          <h1>練字帖產生器</h1>
-          <p>輸入要練習的國字，調整格線、注音與樣式後，即可產生可列印的練字帖。</p>
+          <h1>國字標準字體字帖產生器</h1>
+          <p>輸入要練習的國字，調整格線、國字樣式後，即可產生可列印的字帖。</p>
         </header>
+
+        <p id="status" class="status" role="status">正在載入注音資料...</p>
 
         <section class="panel-card" aria-labelledby="step-input">
           <div class="section-heading">
             <span class="step-mark">1</span>
             <div>
-              <h2 id="step-input">輸入練習內容</h2>
-              <p>換行與標點會自動略過，只保留國字練習格。</p>
+              <h2 id="step-input">輸入內容</h2>
+              <p>換行與標點會自動略過，只保留國字。</p>
             </div>
           </div>
 
@@ -63,23 +65,23 @@
           </fieldset>
 
           <fieldset>
-            <legend>顯示模式</legend>
+            <legend>字型樣式</legend>
             <div class="segmented ink-modes">
               <label>
                 <input type="radio" name="ink" value="trace" checked>
-                <span>紅字描紅</span>
+                <span>紅字</span>
               </label>
               <label>
                 <input type="radio" name="ink" value="read">
-                <span>黑字閱讀</span>
+                <span>黑字</span>
               </label>
               <label>
                 <input type="radio" name="ink" value="outline">
-                <span>鏤空填充</span>
+                <span>鏤空</span>
               </label>
               <label>
                 <input type="radio" name="ink" value="hide">
-                <span>空白練習</span>
+                <span>空白</span>
               </label>
             </div>
           </fieldset>
@@ -121,16 +123,34 @@
           <div class="section-heading">
             <span class="step-mark">3</span>
             <div>
-              <h2 id="step-print">預覽與列印</h2>
-              <p>列印時只輸出右側 A4 字帖，不會印出設定面板。</p>
+              <h2 id="step-print">列印</h2>
+              <p>列印時只顯示右側 A4 字帖。</p>
             </div>
           </div>
 
           <div class="actions">
             <button id="printButton" class="primary-button" type="button">列印</button>
           </div>
+        </section>
 
-          <p id="status" class="status" role="status">正在載入注音資料...</p>
+        <section class="panel-card" aria-labelledby="about-site">
+          <div class="section-heading">
+            <span class="step-mark">i</span>
+            <div>
+              <h2 id="about-site">關於本站</h2>
+              <p>字帖字體使用教育部標準楷書，<br>注音位置遵從《國語注音符號手冊》。</p>
+            </div>
+          </div>
+
+          <p>
+            作者：
+            <a href="https://hankchen.info/" target="_blank" rel="author">Hank Chen</a>
+          </p>
+          <p>
+            本網站採
+            <a href="https://creativecommons.org/licenses/by-nc-nd/3.0/tw/" rel="license">姓名標示─非商業性─禁止改作 3.0 台灣</a>
+            授權。
+          </p>
         </section>
       </aside>
 

@@ -16,7 +16,7 @@
   --color-trace-text: oklch(62% 0.18 24);
   --color-guide-line: oklch(78% 0.012 92);
   --color-status-warning: oklch(43% 0.105 72);
-  --font-display: "MOE Edu Kai", "BiauKai", "DFKai-SB", serif;
+  --font-display: "MOE Edu Kai", serif;
   --font-body: -apple-system, BlinkMacSystemFont, "Noto Sans TC",
     "Microsoft JhengHei", system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
@@ -130,6 +130,13 @@ p {
   border: 1px solid var(--color-border);
   border-radius: 16px;
   background: var(--color-surface);
+}
+
+.panel-card a {
+  color: var(--color-accent);
+  font-weight: 800;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 3px;
 }
 
 .section-heading {
@@ -339,6 +346,7 @@ input[type="number"]:focus {
   color: var(--color-status-warning);
   font-size: 13px;
   line-height: 1.55;
+  white-space: pre-line;
 }
 
 .preview-stage {

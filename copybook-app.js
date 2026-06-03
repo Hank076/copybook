@@ -213,12 +213,12 @@ function addGuideLines(square) {
 
 function updateStatus(missingChars) {
   const loadedMessage =
-    `已載入 ${appState.zhuyinReadingsByChar.size} 筆注音。`;
+    `已載入 ${appState.zhuyinReadingsByChar.size} 筆注音。\n`;
   const polyphonicHint = "點選多音字可依前後各 1 字上下文切換讀音。";
 
   if (appState.dataError) {
     dom.status.textContent =
-      `注音資料載入失敗：${appState.dataError}。若直接用 file:// 開啟時失敗，請改用本機伺服器開啟。`;
+      `注音資料載入失敗：${appState.dataError}。\n若直接用 file:// 開啟時失敗，請改用本機伺服器開啟。`;
     return;
   }
 
@@ -445,7 +445,7 @@ function handleReadingChoiceClick(event) {
 
   appState.selectedReadingIndexByContext.set(contextKey, index);
   appState.lastSelection =
-    `「${char}」已切換為 ${reading}。相同前後各 1 字上下文的格子會同步更新。`;
+    `「${char}」已切換為 ${reading}。\n相同前後各 1 字上下文的格子會同步更新。`;
   updateReadingCells(contextKey, reading);
   updateStatus(
     currentMissingPracticeChars(parsePracticeChars(dom.textInput.value)),
