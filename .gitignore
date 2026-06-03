@@ -1,0 +1,20 @@
+# Local assistant/tooling state
+.claude/
+
+# Local visual reference samples
+samples/
+
+# Internal planning notes
+docs/
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Dependency and cache folders
+node_modules/
+.npm/
+
+# Logs
+*.log
