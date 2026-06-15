@@ -339,10 +339,16 @@ function readRenderSettings() {
 }
 
 function syncControlValues({ repeat, columns, preferredRows, fillPage }) {
-  dom.repeatCount.value = String(repeat);
+  if (document.activeElement !== dom.repeatCount) {
+    dom.repeatCount.value = String(repeat);
+  }
   dom.repeatCount.disabled = fillPage;
-  dom.columnCount.value = String(columns);
-  dom.rowCount.value = String(preferredRows);
+  if (document.activeElement !== dom.columnCount) {
+    dom.columnCount.value = String(columns);
+  }
+  if (document.activeElement !== dom.rowCount) {
+    dom.rowCount.value = String(preferredRows);
+  }
 }
 
 function gridClassNameFor({ gridStyle, inkMode, showZhuyin }) {
@@ -446,6 +452,7 @@ function bindEvents() {
 
   for (const numberInput of numberInputs) {
     numberInput.addEventListener("input", render);
+    numberInput.addEventListener("change", render);
   }
 
   for (const control of choiceControls) {
