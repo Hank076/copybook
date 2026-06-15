@@ -18,7 +18,7 @@
 
 - 字帖字體使用教育部標準楷書。
 - 注音位置遵從《國語注音符號手冊》。
-- 注音資料由本專案的 `datas/phonic_table_Z.txt` 載入，資料來源為 [ButTaiwan/bpmfvs](https://github.com/ButTaiwan/bpmfvs)，並由 `tools/generate-zhuyin-table-js.mjs` 轉成瀏覽器可直接載入的 `datas/zhuyin-table.js`。
+- 注音資料來源為 [ButTaiwan/bpmfvs](https://github.com/ButTaiwan/bpmfvs) 的 `datas/phonic_table_Z.txt`，由 `tools/split-phonic-by-keep-list.mjs` 依 `datas/保留清單.txt` 切分為常用 4808 字（`datas/phonic_table_Z_4808.txt`）與其餘字集（`datas/phonic_table_Z_other.txt`），再由 `tools/generate-phonic-js.mjs` 轉成瀏覽器載入的 `.js` 檔；常用 4808 字隨頁載入，其餘缺字時懶載入。
 
 ## 使用方式
 
@@ -59,7 +59,8 @@ npm test
 重新產生瀏覽器用注音資料：
 
 ```bash
-node tools/generate-zhuyin-table-js.mjs
+node tools/split-phonic-by-keep-list.mjs
+node tools/generate-phonic-js.mjs
 ```
 
 ## 授權

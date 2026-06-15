@@ -2,11 +2,6 @@ import { readFileSync, writeFileSync } from "node:fs";
 
 const tables = [
   {
-    sourcePath: "datas/phonic_table_Z.txt",
-    targetPath: "datas/phonic_table_Z.js",
-    globalName: "PHONIC_TABLE_Z",
-  },
-  {
     sourcePath: "datas/phonic_table_Z_4808.txt",
     targetPath: "datas/phonic_table_Z_4808.js",
     globalName: "PHONIC_TABLE_Z_4808",

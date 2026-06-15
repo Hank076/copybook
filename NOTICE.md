@@ -25,8 +25,9 @@ Bundled file:
 
 The phonetic data file `datas/phonic_table_Z.txt` is from [ButTaiwan/bpmfvs](https://github.com/ButTaiwan/bpmfvs) and is licensed under Apache License 2.0.
 
-Generated file:
+Generated files:
 
-- `datas/zhuyin-table.js`
+- `datas/phonic_table_Z_4808.js`
+- `datas/phonic_table_Z_other.js`
 
-`datas/zhuyin-table.js` is generated from `datas/phonic_table_Z.txt` by `tools/generate-zhuyin-table-js.mjs` and follows the same upstream data license.
+These files are generated from `datas/phonic_table_Z.txt` by `tools/split-phonic-by-keep-list.mjs` and `tools/generate-phonic-js.mjs`, and follow the same upstream data license.
