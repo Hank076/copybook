@@ -437,6 +437,18 @@ function render() {
   }
 }
 
+let scheduledRenderFrame = 0;
+
+// 以 requestAnimationFrame 合併同一幀內的多次 render 請求，只實際渲染一次。
+function scheduleRender() {
+  if (scheduledRenderFrame) return;
+
+  scheduledRenderFrame = requestAnimationFrame(() => {
+    scheduledRenderFrame = 0;
+    render();
+  });
+}
+
 function bindEvents() {
   const numberInputs = [dom.repeatCount, dom.columnCount, dom.rowCount];
   const choiceControls = [
@@ -447,16 +459,18 @@ function bindEvents() {
 
   dom.textInput.addEventListener("input", () => {
     appState.lastSelection = "";
-    render();
+    // 輸入變更代表可能需要新的罕用字，清掉先前失敗旗標以允許下次重試補載。
+    appState.additionalDataError = "";
+    scheduleRender();
   });
 
   for (const numberInput of numberInputs) {
-    numberInput.addEventListener("input", render);
-    numberInput.addEventListener("change", render);
+    numberInput.addEventListener("input", scheduleRender);
+    numberInput.addEventListener("change", scheduleRender);
   }
 
   for (const control of choiceControls) {
-    control.addEventListener("change", render);
+    control.addEventListener("change", scheduleRender);
   }
 
   dom.printButton.addEventListener("click", () => {
