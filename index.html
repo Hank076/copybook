@@ -95,7 +95,7 @@
             <span class="step-mark">1</span>
             <div>
               <h2 id="step-input">輸入內容</h2>
-              <p>換行與標點會自動略過，只保留國字。</p>
+              <p>可選擇是否忽略換行與標點符號，其他符號會自動略過。</p>
             </div>
           </div>
 
@@ -103,6 +103,40 @@
             <span>要練習的字詞</span>
             <textarea id="textInput" rows="4">五隻小狗想把貓咪叫來天橋上一起看魚</textarea>
           </label>
+
+          <div class="switch-row">
+            <label class="switch">
+              <input id="ignoreLineBreaksToggle" type="checkbox" checked>
+              <span>忽略換行</span>
+            </label>
+
+            <label class="switch">
+              <input id="ignorePunctuationToggle" type="checkbox" checked>
+              <span>忽略標點符號</span>
+            </label>
+          </div>
+
+          <fieldset>
+            <legend>填滿頁面</legend>
+            <div class="segmented fill-modes">
+              <label>
+                <input type="radio" name="fill" value="none" checked>
+                <span>不填滿</span>
+              </label>
+              <label>
+                <input type="radio" name="fill" value="page">
+                <span>填滿頁面</span>
+              </label>
+              <label>
+                <input type="radio" name="fill" value="left">
+                <span>向左填滿</span>
+              </label>
+              <label>
+                <input type="radio" name="fill" value="down">
+                <span>向下填滿</span>
+              </label>
+            </div>
+          </fieldset>
         </section>
 
         <section class="panel-card" aria-labelledby="step-style">
@@ -166,11 +200,6 @@
             <label class="switch">
               <input id="zhuyinToggle" type="checkbox" checked>
               <span>顯示注音</span>
-            </label>
-
-            <label class="switch">
-              <input id="fillPageToggle" type="checkbox">
-              <span>填滿頁面</span>
             </label>
           </div>
 

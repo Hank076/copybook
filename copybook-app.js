@@ -10,13 +10,16 @@ const appState = {
 };
 
 const {
-  buildPracticeItems,
-  calculateTargetRows,
+  LINE_BREAK,
   contextKeyFor,
+  isHanChar,
+  layoutPracticeCells,
   parsePhoneticData,
   parsePracticeChars,
+  parsePracticeText,
   parseZhuyin,
   readingSelectionFor,
+  verticalPunctuationFor,
 } = window.CopybookCore;
 
 const PAGE = {
@@ -35,7 +38,8 @@ const dom = {
   columnCount: document.querySelector("#columnCount"),
   rowCount: document.querySelector("#rowCount"),
   zhuyinToggle: document.querySelector("#zhuyinToggle"),
-  fillPageToggle: document.querySelector("#fillPageToggle"),
+  ignoreLineBreaksToggle: document.querySelector("#ignoreLineBreaksToggle"),
+  ignorePunctuationToggle: document.querySelector("#ignorePunctuationToggle"),
   printButton: document.querySelector("#printButton"),
   authorLink: document.querySelector("#authorLink"),
   readingChoices: document.querySelector("#readingChoices"),
@@ -223,6 +227,20 @@ function createZhuyinContainer(reading = "") {
   return zhuyin;
 }
 
+function createPunctuationCell(char) {
+  const cell = document.createElement("div");
+  cell.className = "cell punctuation";
+
+  const charNode = document.createElement("span");
+  charNode.className = "char";
+  charNode.textContent = verticalPunctuationFor(char);
+
+  const square = createSquare();
+  square.append(charNode);
+  cell.append(square, createZhuyinContainer());
+  return cell;
+}
+
 function createCell(char, contextKey, reading, isPolyphonic) {
   const cell = document.createElement("div");
   cell.className = "cell";
@@ -322,11 +340,16 @@ function clampNumber(input, min, max, fallback) {
 }
 
 function readRenderSettings() {
-  const practiceChars = parsePracticeChars(dom.textInput.value);
+  const practiceTokens = parsePracticeText(dom.textInput.value, {
+    ignoreLineBreaks: dom.ignoreLineBreaksToggle.checked,
+    ignorePunctuation: dom.ignorePunctuationToggle.checked,
+  });
   const repeat = clampNumber(dom.repeatCount, 0, 12, 0);
+  const fillMode = selectedValue("fill");
 
   return {
-    practiceChars,
+    practiceTokens,
+    practiceChars: practiceTokens.filter((token) => token !== LINE_BREAK),
     repeat,
     sentenceCount: repeat + 1,
     columns: clampNumber(dom.columnCount, 4, 8, 6),
@@ -334,7 +357,8 @@ function readRenderSettings() {
     gridStyle: selectedValue("grid"),
     inkMode: selectedValue("ink"),
     showZhuyin: dom.zhuyinToggle.checked,
-    fillPage: dom.fillPageToggle.checked,
+    fillMode,
+    fillPage: fillMode !== "none",
   };
 }
 
@@ -355,20 +379,20 @@ function gridClassNameFor({ gridStyle, inkMode, showZhuyin }) {
   return `grid ${gridStyle} ${inkMode}${showZhuyin ? "" : " no-zhuyin"}`;
 }
 
-function buildCells(practiceChars, practiceItems, totalCellCount) {
-  const cells = practiceItems.map(({ char, sourceIndex }) => {
+function buildCells(practiceChars, layoutCells) {
+  return layoutCells.map((item) => {
+    if (!item) return createPracticeCell();
+
+    const { char, sourceIndex } = item;
+
+    if (!isHanChar(char)) return createPunctuationCell(char);
+
     const contextKey = contextKeyFor(practiceChars, sourceIndex);
     const readings = appState.zhuyinReadingsByChar.get(char) || [];
     const reading = selectedReadingFor(char, contextKey);
 
     return createCell(char, contextKey, reading, readings.length > 1);
   });
-
-  for (let index = practiceItems.length; index < totalCellCount; index += 1) {
-    cells.push(createPracticeCell());
-  }
-
-  return cells;
 }
 
 function renderPages({ cells, columns, totalRows, rowsPerPage, gridClassName }) {
@@ -394,27 +418,26 @@ function renderPages({ cells, columns, totalRows, rowsPerPage, gridClassName }) 
 function render() {
   const settings = readRenderSettings();
   const {
+    practiceTokens,
     practiceChars,
     sentenceCount,
     columns,
     preferredRows,
-    fillPage,
+    fillMode,
     showZhuyin,
   } = settings;
-  const basePracticeItems = buildPracticeItems(practiceChars, sentenceCount);
-  const totalRows = calculateTargetRows(
-    basePracticeItems.length,
-    columns,
-    preferredRows,
-  );
-  const totalCellCount = columns * totalRows;
-  const practiceItems = buildPracticeItems(
-    practiceChars,
-    sentenceCount,
-    fillPage ? totalCellCount : undefined,
-  );
-  const cells = buildCells(practiceChars, practiceItems, totalCellCount);
   const rowsPerPage = maxRowsPerPage(columns, showZhuyin);
+  const { cells: layoutCells, totalRows } = layoutPracticeCells(
+    practiceTokens,
+    {
+      columns,
+      preferredRows,
+      rowsPerPage,
+      repeatCount: sentenceCount,
+      fillMode,
+    },
+  );
+  const cells = buildCells(practiceChars, layoutCells);
 
   syncControlValues(settings);
   renderPages({
@@ -424,7 +447,9 @@ function render() {
     rowsPerPage,
     gridClassName: gridClassNameFor(settings),
   });
-  const missingChars = currentMissingPracticeChars(practiceChars);
+  const missingChars = currentMissingPracticeChars(
+    practiceChars.filter(isHanChar),
+  );
   updateStatus(missingChars);
 
   if (
@@ -453,8 +478,11 @@ function bindEvents() {
   const numberInputs = [dom.repeatCount, dom.columnCount, dom.rowCount];
   const choiceControls = [
     dom.zhuyinToggle,
-    dom.fillPageToggle,
-    ...document.querySelectorAll('input[name="grid"], input[name="ink"]'),
+    dom.ignoreLineBreaksToggle,
+    dom.ignorePunctuationToggle,
+    ...document.querySelectorAll(
+      'input[name="grid"], input[name="ink"], input[name="fill"]',
+    ),
   ];
 
   dom.textInput.addEventListener("input", () => {
@@ -480,7 +508,9 @@ function bindEvents() {
       grid_style: settings.gridStyle,
       font_style: settings.inkMode,
       show_zhuyin: settings.showZhuyin,
-      fill_page: settings.fillPage,
+      fill_page: settings.fillMode,
+      ignore_line_breaks: dom.ignoreLineBreaksToggle.checked,
+      ignore_punctuation: dom.ignorePunctuationToggle.checked,
     });
 
     window.print();
