@@ -349,7 +349,6 @@ input[type="number"]:focus {
 }
 
 .status {
-  min-height: 76px;
   padding: 12px 13px;
   border-radius: 12px;
   background:
