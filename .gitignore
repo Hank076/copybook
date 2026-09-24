@@ -1,5 +1,7 @@
 # Local assistant/tooling state
 .claude/
+AGENTS.md
+CLAUDE.md
 
 # Local visual reference samples
 samples/
