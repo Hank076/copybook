@@ -297,9 +297,7 @@ function addGuideLines(square) {
 }
 
 function updateStatus(missingChars) {
-  const loadedMessage =
-    `已載入 ${appState.zhuyinReadingsByChar.size} 筆注音。\n`;
-  const polyphonicHint = "點選多音字可依前後各 1 字上下文切換讀音。";
+  const polyphonicHint = "💡 點選多音字可依前後各 1 字上下文切換讀音。";
 
   if (appState.dataError) {
     dom.status.textContent =
@@ -315,23 +313,23 @@ function updateStatus(missingChars) {
   if (missingChars.length > 0) {
     if (appState.additionalDataLoading) {
       dom.status.textContent =
-        `${loadedMessage}正在補載其餘注音資料：${missingChars.join("、")}。`;
+        `正在補載其餘注音資料：${missingChars.join("、")}。`;
       return;
     }
 
     if (appState.additionalDataError) {
       dom.status.textContent =
-        `${loadedMessage}其餘注音資料載入失敗：${appState.additionalDataError}。\n查不到注音：${missingChars.join("、")}。${polyphonicHint}`;
+        `其餘注音資料載入失敗：${appState.additionalDataError}。\n查不到注音：${missingChars.join("、")}。\n${polyphonicHint}`;
       return;
     }
 
     dom.status.textContent =
-      `${loadedMessage}查不到注音：${missingChars.join("、")}。${polyphonicHint}`;
+      `查不到注音：${missingChars.join("、")}。\n${polyphonicHint}`;
     return;
   }
 
   dom.status.textContent =
-    appState.lastSelection || `${loadedMessage}${polyphonicHint}`;
+    appState.lastSelection || polyphonicHint;
 }
 
 function clampNumber(input, min, max, fallback) {
